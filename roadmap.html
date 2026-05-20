@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT Client Management System — Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  body { background: var(--sand-50); color: var(--ink); }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 64px 48px 120px; }
+  .eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay-600); }
+  h1.title { font-family: var(--f-display); font-size: clamp(56px, 7vw, 108px); line-height: 0.98; font-weight: 400; margin: 8px 0 0; letter-spacing: -0.02em; }
+  h1.title em { font-style: italic; color: var(--clay-600); }
+  .lede { max-width: 720px; margin-top: 24px; font-size: 18px; line-height: 1.55; color: #3a2e22; }
+
+  /* Meta strip */
+  .meta {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    margin-top: 48px; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline);
+  }
+  .meta > div { padding: 18px 20px; border-right: 1px solid var(--hairline); }
+  .meta > div:last-child { border-right: none; }
+  .meta .k { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--clay-600); }
+  .meta .v { font-family: var(--f-display); font-size: 26px; margin-top: 6px; }
+
+  /* Legend */
+  .legend { display: flex; gap: 22px; flex-wrap: wrap; margin: 40px 0 16px; align-items: center; }
+  .legend .item { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #3a2e22; }
+  .swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--hairline-strong); }
+
+  /* Phase */
+  .phase { margin-top: 72px; }
+  .phase-head {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: end;
+    padding-bottom: 18px; border-bottom: 2px solid var(--ink);
+  }
+  .phase-num { font-family: var(--f-display); font-size: 140px; line-height: 0.85; letter-spacing: -0.04em; }
+  .phase-title { font-family: var(--f-display); font-size: 56px; line-height: 1; font-weight: 400; letter-spacing: -0.01em; }
+  .phase-meta { text-align: right; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--clay-600); line-height: 1.6; }
+  .phase-intro { max-width: 780px; margin: 18px 0 32px; font-size: 16px; line-height: 1.6; color: #3a2e22; }
+
+  /* Card grid */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card {
+    background: var(--paper); border: 1px solid var(--hairline);
+    border-radius: var(--r-lg); padding: 22px; display: flex; flex-direction: column; gap: 14px;
+    box-shadow: var(--sh-1); position: relative;
+  }
+  .card .id {
+    position: absolute; top: 14px; right: 16px;
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--clay-600);
+  }
+  .card .bucket {
+    display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border-radius: var(--r-pill);
+    font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    width: fit-content;
+  }
+  .card h3 { font-family: var(--f-display); font-size: 26px; line-height: 1.1; margin: 0; font-weight: 400; letter-spacing: -0.01em; }
+  .card p { margin: 0; font-size: 13.5px; line-height: 1.55; color: #3a2e22; }
+  .card ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; color: #3a2e22; }
+  .card ul li { margin-bottom: 2px; }
+  .card .deps {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--hairline);
+    align-items: center;
+  }
+  .card .deps .lbl { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--clay-600); margin-right: 4px; }
+  .chip {
+    font-family: var(--f-mono); font-size: 10.5px; padding: 3px 8px; border-radius: 4px;
+    background: var(--sand-100); border: 1px solid var(--hairline); color: var(--espresso-800);
+  }
+  .chip.none { background: transparent; color: var(--clay-600); font-style: italic; }
+
+  /* Bucket colors */
+  .b-ops      { background: var(--sage-200); color: #3f5436; }
+  .b-ai       { background: var(--terracotta-200); color: #6d3720; }
+  .b-client   { background: var(--sand-200); color: var(--espresso-800); }
+  .b-coach    { background: #E8DDF0; color: #4a2f5e; }
+  .b-nutrition{ background: #F0E4C2; color: #6b5518; }
+  .b-community{ background: #D9E4E0; color: #2f4a44; }
+  .b-policy   { background: #EADBC4; color: var(--espresso-800); }
+
+  /* Phase accent */
+  .phase.mvp .phase-num { color: var(--walnut-700); }
+  .phase.beta .phase-num { color: var(--terracotta-500); }
+  .phase.launch .phase-num { color: var(--sage-500); }
+
+  /* Dependency section */
+  .deps-map {
+    margin-top: 96px; background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--r-xl); padding: 40px;
+  }
+  .deps-map h2 { font-family: var(--f-display); font-size: 44px; font-weight: 400; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .deps-map p.sub { margin: 0 0 28px; color: #3a2e22; font-size: 14.5px; }
+  .flow { display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr; gap: 0; align-items: stretch; }
+  .col-head {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600);
+    padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--hairline);
+  }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .node {
+    padding: 10px 12px; border-radius: var(--r-md); background: var(--sand-50); border: 1px solid var(--hairline);
+    font-size: 12.5px; line-height: 1.35; font-weight: 500;
+  }
+  .node .tag { font-family: var(--f-mono); font-size: 10px; color: var(--clay-600); letter-spacing: 0.08em; display: block; margin-bottom: 2px; }
+  .arrow { display: flex; align-items: center; justify-content: center; color: var(--clay-600); }
+
+  /* Risks + notes */
+  .notes { margin-top: 72px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .note { background: var(--sand-100); border-radius: var(--r-lg); padding: 24px; border: 1px solid var(--hairline); }
+  .note .k { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600); }
+  .note h4 { font-family: var(--f-display); font-size: 22px; font-weight: 400; margin: 6px 0 10px; letter-spacing: -0.01em; }
+  .note p { margin: 0; font-size: 13.5px; line-height: 1.55; color: #3a2e22; }
+
+  /* Version footer */
+  .version {
+    margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--hairline);
+    display: flex; justify-content: space-between; gap: 24px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--clay-600);
+    text-transform: uppercase;
+  }
+  .version a { color: var(--walnut-700); text-decoration: none; border-bottom: 1px solid var(--hairline-strong); }
+
+  @media (max-width: 1024px) {
+    .wrap { padding: 40px 24px 80px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .meta { grid-template-columns: repeat(2, 1fr); }
+    .meta > div:nth-child(2) { border-right: none; }
+    .flow { grid-template-columns: 1fr; }
+    .arrow { transform: rotate(90deg); padding: 8px 0; }
+    .notes { grid-template-columns: 1fr; }
+    .phase-head { grid-template-columns: 1fr; gap: 6px; }
+    .phase-meta { text-align: left; }
+    .phase-num { font-size: 96px; }
+    .phase-title { font-size: 40px; }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <div class="eyebrow">My Third Space · Internal planning · v1_240426</div>
+  <h1 class="title">PT Client<br>Management <em>System</em></h1>
+  <p class="lede">A prioritized roadmap for the web-first client management platform — from a 1-month PT pilot to a full-feature launch covering coaches, groups, nutrition and community. Every feature is bucketed by surface area, scored for priority, and wired to the dependencies it needs to ship.</p>
+
+  <div class="meta">
+    <div><div class="k">Platform</div><div class="v">Web app (PWA)</div></div>
+    <div><div class="k">Pilot scope</div><div class="v">PT clients · 1 mo</div></div>
+    <div><div class="k">Native app</div><div class="v">Post-beta · TBC</div></div>
+    <div><div class="k">Doc version</div><div class="v">v1_240426</div></div>
+  </div>
+
+  <div class="legend">
+    <span class="item"><span class="swatch" style="background:var(--sand-200)"></span> Client portal</span>
+    <span class="item"><span class="swatch" style="background:#E8DDF0"></span> Coach universe</span>
+    <span class="item"><span class="swatch" style="background:var(--sage-200)"></span> Ops &amp; platform</span>
+    <span class="item"><span class="swatch" style="background:var(--terracotta-200)"></span> AI &amp; data</span>
+    <span class="item"><span class="swatch" style="background:#F0E4C2"></span> Nutrition</span>
+    <span class="item"><span class="swatch" style="background:#D9E4E0"></span> Community</span>
+    <span class="item"><span class="swatch" style="background:#EADBC4"></span> Policy</span>
+  </div>
+
+  <!-- ============ PHASE 1 — MVP ============ -->
+  <section class="phase mvp">
+    <div class="phase-head">
+      <div class="phase-num">01</div>
+      <div class="phase-title">MVP — Foundations &amp; PT&nbsp;pilot</div>
+      <div class="phase-meta">Weeks 0–6<br>Target: 10–15 PT clients<br>Success: daily active use by 80% of pilot</div>
+    </div>
+    <p class="phase-intro">Everything a PT coach needs to run their book of clients end-to-end: onboard, assess, program, book, and keep notes. No AI summaries yet, no group features, no gamification. The bar is "replaces the coach's notebook, spreadsheet and WhatsApp thread."</p>
+
+    <div class="grid">
+      <!-- M-01 -->
+      <div class="card">
+        <span class="id">M-01</span>
+        <span class="bucket b-ops">Ops · Platform</span>
+        <h3>PWA shell &amp; auth</h3>
+        <p>Installable web app with email / phone OTP login, role-based routing (client vs. coach vs. admin), and offline-safe shell.</p>
+        <ul>
+          <li>Add-to-home-screen prompt</li>
+          <li>Session persistence across devices</li>
+          <li>Role guard on every route</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip none">foundation</span></div>
+      </div>
+
+      <!-- M-02 -->
+      <div class="card">
+        <span class="id">M-02</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Client onboarding form</h3>
+        <p>Structured intake capturing MSK &amp; movement assessment, injuries, health history, short- &amp; long-term goals. Saves as the client's living profile.</p>
+        <ul>
+          <li>Multi-step form with autosave</li>
+          <li>Coach-visible, client-editable</li>
+          <li>Re-assessable at any cadence</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-01</span></div>
+      </div>
+
+      <!-- M-03 -->
+      <div class="card">
+        <span class="id">M-03</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Body composition log</h3>
+        <p>Manual input for weight, body fat %, muscle mass, measurements. Timeline view for the client, latest-snapshot view for the coach.</p>
+        <ul>
+          <li>Free-form entry fields</li>
+          <li>Simple line chart per metric</li>
+          <li>Attach a photo per entry</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span></div>
+      </div>
+
+      <!-- M-04 -->
+      <div class="card">
+        <span class="id">M-04</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Health records vault</h3>
+        <p>Uploads for blood work, scans, medical notes. PDF / image, coach-permissioned, with a visible "shared with" audit line.</p>
+        <ul>
+          <li>PDF + image upload</li>
+          <li>Per-file coach access toggle</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span></div>
+      </div>
+
+      <!-- M-05 -->
+      <div class="card">
+        <span class="id">M-05</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>Coach profile &amp; calendar</h3>
+        <p>Public trainer profile (photo, bio, specialisms, intro video) + personal calendar with day / week / month views. Peer calendars are read-only.</p>
+        <ul>
+          <li>Profile editor</li>
+          <li>Own bookings editable, peers read-only</li>
+          <li>Block-out time &amp; off-days</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-01</span></div>
+      </div>
+
+      <!-- M-06 -->
+      <div class="card">
+        <span class="id">M-06</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>PT session booking</h3>
+        <p>Book by trainer or by time slot. Coach-approval window of 5–15 min before a slot auto-confirms; cancel / reschedule within policy window.</p>
+        <ul>
+          <li>Book-by-coach &amp; book-by-time flows</li>
+          <li>12h advance booking default</li>
+          <li>Client sees pending / confirmed state</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-05</span><span class="chip">M-12</span></div>
+      </div>
+
+      <!-- M-07 -->
+      <div class="card">
+        <span class="id">M-07</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>Session notes &amp; programming</h3>
+        <p>Per-session notes attached to the client profile. Exercise log with sets / reps / load, visible historically so any coach can pick up where the last one left off.</p>
+        <ul>
+          <li>Quick-log template per session</li>
+          <li>Coach-to-coach handoff view</li>
+          <li>Client sees a read-only summary</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span><span class="chip">M-06</span></div>
+      </div>
+
+      <!-- M-08 -->
+      <div class="card">
+        <span class="id">M-08</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>PB tracker</h3>
+        <p>Personal bests for compound lifts (squat, bench, deadlift, OHP) plus custom movements — mobility milestones, first pull-up, etc.</p>
+        <ul>
+          <li>Pre-seeded compound list</li>
+          <li>Custom goals with target date</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span></div>
+      </div>
+
+      <!-- M-09 -->
+      <div class="card">
+        <span class="id">M-09</span>
+        <span class="bucket b-policy">Policy</span>
+        <h3>Booking &amp; cancellation rules</h3>
+        <p>System-enforced policy layer: 12h advance window, same-day cutoffs, no-show handling. Rules live in config so admins can adjust once.</p>
+        <ul>
+          <li>Config-driven windows</li>
+          <li>No-show auto-flagging</li>
+          <li>Override requires admin</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-06</span></div>
+      </div>
+
+      <!-- M-10 -->
+      <div class="card">
+        <span class="id">M-10</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>Time-off &amp; block requests</h3>
+        <p>Coaches request off-days or hour blocks; admin approves. Clients with standing sessions are auto-notified with alternate-coach options.</p>
+        <ul>
+          <li>Request flow + admin approval</li>
+          <li>Client-side impact notification</li>
+        </ul>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-05</span></div>
+      </div>
+
+      <!-- M-11 -->
+      <div class="card">
+        <span class="id">M-11</span>
+        <span class="bucket b-ops">Ops · Platform</span>
+        <h3>Admin console (v1)</h3>
+        <p>Minimal back office: manage coaches, approve time-off, edit policy config, view client roster. Not pretty, just functional.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-01</span></div>
+      </div>
+
+      <!-- M-12 -->
+      <div class="card">
+        <span class="id">M-12</span>
+        <span class="bucket b-ops">Ops · Platform</span>
+        <h3>Notifications — core</h3>
+        <p>Push + email for booking confirmed / declined, session reminder (24h &amp; 2h), coach off-day impact, policy breaches. One plumbing, many senders.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-01</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHASE 2 — BETA ============ -->
+  <section class="phase beta">
+    <div class="phase-head">
+      <div class="phase-num">02</div>
+      <div class="phase-title">Beta — Intelligence &amp; nutrition</div>
+      <div class="phase-meta">Weeks 6–14<br>Scale: all PT + first GX cohort<br>Success: AI summary usage + Kenko opt-in &gt; 40%</div>
+    </div>
+    <p class="phase-intro">The pilot has proved the plumbing works. Beta adds the things that make the product distinctive: AI-assisted profiling, wearable / BCA integrations, weekly nutrition planning with Kenko, and a slice of group-class tracking. Gamification arrives — quietly — as personal badges, not leaderboards.</p>
+
+    <div class="grid">
+      <!-- B-01 -->
+      <div class="card">
+        <span class="id">B-01</span>
+        <span class="bucket b-ai">AI &amp; data</span>
+        <h3>AI profile summary</h3>
+        <p>Given onboarding + body comp + bloods, generate a one-page coach-facing briefing: focus areas, flags, suggested programming levers. Coach can accept, edit, or override.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span><span class="chip">M-03</span><span class="chip">M-04</span></div>
+      </div>
+
+      <!-- B-02 -->
+      <div class="card">
+        <span class="id">B-02</span>
+        <span class="bucket b-ai">AI &amp; data</span>
+        <h3>BCA Bluetooth / photo intake</h3>
+        <p>Pair common BCA scales over Bluetooth; fallback to AI-estimated body comp from a standardised photo pose when hardware's unavailable.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-03</span></div>
+      </div>
+
+      <!-- B-03 -->
+      <div class="card">
+        <span class="id">B-03</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Wearable integrations</h3>
+        <p>Pull heart rate, steps, sleep, workouts from Apple Health, Google Fit, Garmin. Coach sees trend tiles, not raw firehose.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span></div>
+      </div>
+
+      <!-- B-04 -->
+      <div class="card">
+        <span class="id">B-04</span>
+        <span class="bucket b-nutrition">Nutrition</span>
+        <h3>Nutrition plan &amp; logging</h3>
+        <p>Assign blocks (e.g. "2 meals/day, 12 weeks") with daily log. Private to client + nutritionist unless explicitly shared. No photos-required default.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-02</span></div>
+      </div>
+
+      <!-- B-05 -->
+      <div class="card">
+        <span class="id">B-05</span>
+        <span class="bucket b-nutrition">Nutrition</span>
+        <h3>Kenco pre-order</h3>
+        <p>Café menu filtered by the client's nutrition plan; pre-order for pickup after a session. Kitchen gets a lead-time-respecting queue.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">B-04</span></div>
+      </div>
+
+      <!-- B-06 -->
+      <div class="card">
+        <span class="id">B-06</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Weekly plan (7-day view)</h3>
+        <p>Full week routine — PT sessions, GX classes, solo workouts, meal blocks, sleep window. Designed for weight-loss / lifestyle goals.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-06</span><span class="chip">B-04</span></div>
+      </div>
+
+      <!-- B-07 -->
+      <div class="card">
+        <span class="id">B-07</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Personal streaks &amp; badges</h3>
+        <p>Private-by-default accountability: attendance streak, PB unlocked, consistency badges. No public leaderboard in beta.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-06</span><span class="chip">M-08</span></div>
+      </div>
+
+      <!-- B-08 -->
+      <div class="card">
+        <span class="id">B-08</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>External calendar sync</h3>
+        <p>Two-way sync with Google &amp; Apple calendar so coaches see personal commitments and we auto-block M3S slots accordingly.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-05</span><span class="chip">M-10</span></div>
+      </div>
+
+      <!-- B-09 -->
+      <div class="card">
+        <span class="id">B-09</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>PT invoicing &amp; session ledger</h3>
+        <p>Automatic ledger of delivered vs. cancelled vs. no-show sessions. Month-end statements for coach payout; client sees session balance.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-06</span><span class="chip">M-09</span></div>
+      </div>
+
+      <!-- B-10 -->
+      <div class="card">
+        <span class="id">B-10</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>GX / group tracking (pilot)</h3>
+        <p>Allow GX members to set individual goals (1RM, isometric, pull-ups, run milestones) and log them inside a group class context.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-08</span><span class="chip">M-02</span></div>
+      </div>
+
+      <!-- B-11 -->
+      <div class="card">
+        <span class="id">B-11</span>
+        <span class="bucket b-policy">Policy</span>
+        <h3>Trial-class &amp; abuse controls</h3>
+        <p>One-time trial logic, cancellation fees, compensatory session rules for genuine emergencies. Admin-logged exceptions only.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-09</span></div>
+      </div>
+
+      <!-- B-12 -->
+      <div class="card">
+        <span class="id">B-12</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>Coach → client messaging</h3>
+        <p>1:1 thread per client, visible across coaches who share the client. Not a general-purpose chat — scoped, searchable, note-like.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-07</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHASE 3 — FULL LAUNCH ============ -->
+  <section class="phase launch">
+    <div class="phase-head">
+      <div class="phase-num">03</div>
+      <div class="phase-title">Full launch — Community &amp; scale</div>
+      <div class="phase-meta">Weeks 14–24+<br>Scale: whole member base + workshops<br>Success: native app parity + retention uplift</div>
+    </div>
+    <p class="phase-intro">The platform graduates from "tool the coaches use" to "product the business runs on." Native apps, workshops, community groups, smarter programming recommendations, and the public-ish features we deliberately delayed — like trial funnels and monetised workshop sign-ups.</p>
+
+    <div class="grid">
+      <!-- L-01 -->
+      <div class="card">
+        <span class="id">L-01</span>
+        <span class="bucket b-ops">Ops · Platform</span>
+        <h3>Native iOS &amp; Android wrappers</h3>
+        <p>Ship the PWA as a native shell — push, biometric unlock, deeper wearable access. App-store presence without rewriting the product.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-01</span><span class="chip">B-03</span></div>
+      </div>
+
+      <!-- L-02 -->
+      <div class="card">
+        <span class="id">L-02</span>
+        <span class="bucket b-ai">AI &amp; data</span>
+        <h3>Adaptive programming engine</h3>
+        <p>Given goals + recent logs + wearable signal, suggest next-session focus and progression. Coach keeps the pen; AI hands them a draft.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">B-01</span><span class="chip">M-07</span><span class="chip">B-03</span></div>
+      </div>
+
+      <!-- L-03 -->
+      <div class="card">
+        <span class="id">L-03</span>
+        <span class="bucket b-community">Community</span>
+        <h3>Interest groups (Hyrox, running…)</h3>
+        <p>Opt-in groups with coach-moderated threads, shared events and goals. Feels peer-to-peer; stays safe because coaches are in-room.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">B-12</span></div>
+      </div>
+
+      <!-- L-04 -->
+      <div class="card">
+        <span class="id">L-04</span>
+        <span class="bucket b-community">Community</span>
+        <h3>Workshops</h3>
+        <p>Short-cycle skill workshops (pull-ups, running form, mobility). Data-driven topic picking from aggregated member goals.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-08</span><span class="chip">B-10</span></div>
+      </div>
+
+      <!-- L-05 -->
+      <div class="card">
+        <span class="id">L-05</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Trial funnel &amp; paywall</h3>
+        <p>Public landing → trial booking → payment funnel → onboarding auto-trigger. Anti-abuse flags share the B-11 ruleset.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-06</span><span class="chip">B-11</span></div>
+      </div>
+
+      <!-- L-06 -->
+      <div class="card">
+        <span class="id">L-06</span>
+        <span class="bucket b-client">Client portal</span>
+        <h3>Opt-in leaderboards</h3>
+        <p>Per-group, per-goal leaderboards the member chooses to appear on. Never on by default. Kept for motivation, not intimidation.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">B-07</span><span class="chip">L-03</span></div>
+      </div>
+
+      <!-- L-07 -->
+      <div class="card">
+        <span class="id">L-07</span>
+        <span class="bucket b-nutrition">Nutrition</span>
+        <h3>Truth-friendly meal logging</h3>
+        <p>Photo-optional, quick-tap logging with a "close enough" honesty setting. Weekly compliance shown as a band, not a grade.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">B-04</span></div>
+      </div>
+
+      <!-- L-08 -->
+      <div class="card">
+        <span class="id">L-08</span>
+        <span class="bucket b-coach">Coach universe</span>
+        <h3>Coach ↔ coach handoff tools</h3>
+        <p>"I'm away; redistribute my clients" flow with suggested peers based on specialism + availability. Client-side consent required.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-10</span><span class="chip">B-08</span></div>
+      </div>
+
+      <!-- L-09 -->
+      <div class="card">
+        <span class="id">L-09</span>
+        <span class="bucket b-ops">Ops · Platform</span>
+        <h3>Analytics &amp; cohort insights</h3>
+        <p>Retention, attendance, goal-completion dashboards for admin. Surfaces which coaches / workshops / programs actually move the needle.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip">M-11</span><span class="chip">B-09</span></div>
+      </div>
+
+      <!-- L-10 -->
+      <div class="card">
+        <span class="id">L-10</span>
+        <span class="bucket b-ops">Ops · Platform</span>
+        <h3>Member education hub</h3>
+        <p>In-app guides on booking rules, policy changes, new features. Staff-training counterpart for the coach side. Keeps support volume sane.</p>
+        <div class="deps"><span class="lbl">Depends on</span><span class="chip none">spans all phases</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEPENDENCY MAP ============ -->
+  <div class="deps-map">
+    <h2>Critical path</h2>
+    <p class="sub">Everything downstream of these three spines can't ship until its upstream is in place. Keep them unblocked.</p>
+
+    <div class="flow">
+      <div>
+        <div class="col-head">Platform spine</div>
+        <div class="col">
+          <div class="node"><span class="tag">M-01</span>PWA shell &amp; auth</div>
+          <div class="node"><span class="tag">M-12</span>Notifications core</div>
+          <div class="node"><span class="tag">M-11</span>Admin console</div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div>
+        <div class="col-head">Client spine</div>
+        <div class="col">
+          <div class="node"><span class="tag">M-02</span>Onboarding form</div>
+          <div class="node"><span class="tag">M-03 · M-04</span>Body comp &amp; health vault</div>
+          <div class="node"><span class="tag">M-06</span>PT booking</div>
+          <div class="node"><span class="tag">B-04 · B-06</span>Nutrition &amp; weekly plan</div>
+        </div>
+      </div>
+      <div class="arrow">→</div>
+      <div>
+        <div class="col-head">Coach spine</div>
+        <div class="col">
+          <div class="node"><span class="tag">M-05</span>Coach calendar &amp; profile</div>
+          <div class="node"><span class="tag">M-07</span>Session notes</div>
+          <div class="node"><span class="tag">B-08 · B-09</span>External cal sync + invoicing</div>
+          <div class="node"><span class="tag">L-02</span>Adaptive programming</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RISKS & NOTES ============ -->
+  <div class="notes">
+    <div class="note">
+      <div class="k">Risk — behavioural</div>
+      <h4>Gamification done quietly</h4>
+      <p>Leaderboards can demotivate as much as motivate. Default to private streaks (B-07); only unlock opt-in public leaderboards (L-06) once the culture is established.</p>
+    </div>
+    <div class="note">
+      <div class="k">Risk — policy</div>
+      <h4>No manual exceptions</h4>
+      <p>Once booking / trial / cancellation rules ship (M-09, B-11), admins should not routinely override. Every bypass is future entitlement.</p>
+    </div>
+    <div class="note">
+      <div class="k">Risk — data</div>
+      <h4>AI needs clean inputs</h4>
+      <p>B-01 and L-02 only pay off if onboarding (M-02) and body comp (M-03) are structured, not free text. Invest in the schema before the model.</p>
+    </div>
+  </div>
+
+  <!-- ============ VERSION FOOTER ============ -->
+  <div class="version">
+    <div>Doc · v1_240426 · My Third Space · PT CMS Roadmap</div>
+    <div><a href="versions/v1_240426/index.html">Fallback snapshot → versions/v1_240426/</a></div>
+  </div>
+
+</div>
+</body>
+</html>

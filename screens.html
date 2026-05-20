@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>M3S — Screens Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #E9E4DA; }
+  body { font-family: 'Inter', system-ui, sans-serif; color: var(--espresso-900); }
+
+  /* Frame label chip */
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--clay-600);
+  }
+  .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--walnut-700); }
+
+  /* iframe inside frames — no scrollbar */
+  iframe.frame-src { border: 0; display: block; background: var(--paper); }
+  iframe.frame-src::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="browser-window.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+// All these are globals from the loaded jsx files — no destructure needed.
+// (design-canvas.jsx, ios-frame.jsx, browser-window.jsx all assign to window.)
+
+// ─────────────────────────────────────────────────────────────
+// Screen registry — one source of truth for both web + mobile.
+// Each entry has an anchor in index.html and a friendly label.
+// ─────────────────────────────────────────────────────────────
+const SCREENS = [
+  { id: "home",      label: "01 · Hero",            anchor: "home",     desc: "Editorial entry — eyebrow, statement, primary CTA" },
+  { id: "about",     label: "02 · About M3S",       anchor: "about",    desc: "Move · Eat · Recover · Connect pillars" },
+  { id: "founder",   label: "03 · Founder",         anchor: "founder",  desc: "Origin story · Bengaluru · the 'why'" },
+  { id: "services",  label: "04 · Services",        anchor: "services", desc: "Dark stage — programming, coaching, recovery, nutrition" },
+  { id: "trainers",  label: "05 · Trainers",        anchor: "trainers", desc: "Coach roster · specialties · book direct" },
+  { id: "members",   label: "06 · Members",         anchor: "members",  desc: "Profile · streaks · weekly composition" },
+  { id: "book",      label: "07 · Booking",         anchor: "book",     desc: "By trainer or by time · slot picker" },
+  { id: "kenko",     label: "08 · Kenko Café",      anchor: "kenko",    desc: "Menu · post-session refuel" },
+  { id: "social",    label: "09 · Community",       anchor: "social",   desc: "Events · members' moments" },
+];
+
+// ─────────────────────────────────────────────────────────────
+// FrameSrc — iframe that loads index.html#anchor and scrolls
+// straight to the section. Used inside both browser + iPhone.
+// ─────────────────────────────────────────────────────────────
+function FrameSrc({ anchor, width, height, scale = 1, hideNav = false, deviceWidth }) {
+  const ref = React.useRef(null);
+  const onLoad = () => {
+    const doc = ref.current && ref.current.contentDocument;
+    if (!doc) return;
+    // Inject helper styles so the framed view looks clean inside a card:
+    // hide the floating "Design System" link + Tweaks panel, smooth-disable scroll-snap quirks.
+    const style = doc.createElement('style');
+    style.textContent = `
+      html { scroll-behavior: auto !important; }
+      body { overflow-x: hidden; }
+      /* hide the bottom-left "Design System" pill + tweaks panel inside the frame */
+      a[href="design-system.html"] { display: none !important; }
+      .tweaks-panel { display: none !important; }
+      ${hideNav ? '#root > nav, .m3s-nav { display: none !important; }' : ''}
+      /* nicer smaller-screen rendering for iPhone (375px) */
+    `;
+    doc.head.appendChild(style);
+    // Scroll to the requested anchor after render settles.
+    setTimeout(() => {
+      const el = doc.getElementById(anchor);
+      if (el) doc.documentElement.scrollTop = el.offsetTop - 0;
+    }, 380);
+  };
+
+  // For mobile: render the iframe at deviceWidth (e.g. 375) and let
+  // the site's responsive CSS handle layout. No CSS scaling — true mobile width.
+  const w = deviceWidth || width;
+  return (
+    <iframe
+      ref={ref}
+      className="frame-src"
+      src={`index.html#${anchor}`}
+      onLoad={onLoad}
+      scrolling="no"
+      style={{
+        width: w, height: height / scale,
+        transform: scale === 1 ? undefined : `scale(${scale})`,
+        transformOrigin: 'top left',
+        pointerEvents: 'auto',
+      }}
+    />
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Web artboard — desktop browser chrome around an iframe of index.html
+// ─────────────────────────────────────────────────────────────
+function WebFrame({ screen }) {
+  const W = 1280, H = 760;
+  return (
+    <ChromeWindow
+      tabs={[{ title: `${screen.label} — My Third Space` }]}
+      url={`mythirdspace.in/#${screen.anchor}`}
+      width={W} height={H}
+    >
+      <FrameSrc anchor={screen.anchor} width={W} height={H - 76} />
+    </ChromeWindow>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Mobile artboard — iPhone bezel around an iframe of index.html at 375px
+// ─────────────────────────────────────────────────────────────
+function MobileFrame({ screen }) {
+  // iPhone 14 ish: 375 × 812
+  const W = 375, H = 812;
+  return (
+    <IOSDevice width={W} height={H}>
+      {/* status bar in IOSDevice already covers top 47px; iframe gets full canvas */}
+      <div style={{ width: W, height: H, position: 'relative' }}>
+        <FrameSrc anchor={screen.anchor} width={W} height={H} deviceWidth={375} />
+      </div>
+    </IOSDevice>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Cover card — the canvas opener
+// ─────────────────────────────────────────────────────────────
+function Cover() {
+  return (
+    <div style={{
+      width: 760, height: 520, padding: 56, borderRadius: 24,
+      background: 'var(--paper)', border: '1px solid var(--hairline-strong)',
+      boxShadow: 'var(--sh-3)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      fontFamily: 'var(--f-body)',
+    }}>
+      <div>
+        <div className="chip" style={{ marginBottom: 24 }}>
+          <span className="dot" /> SCREENS · v1
+        </div>
+        <h1 style={{
+          fontFamily: 'var(--f-display)', fontWeight: 400, fontStyle: 'italic',
+          fontSize: 86, lineHeight: 0.95, letterSpacing: '-0.02em',
+          color: 'var(--espresso-900)', margin: '0 0 20px',
+        }}>
+          My Third Space.<br/>
+          <span style={{ color: 'var(--walnut-700)' }}>One product, two surfaces.</span>
+        </h1>
+        <p style={{
+          fontFamily: 'var(--f-display)', fontStyle: 'italic',
+          fontSize: 24, lineHeight: 1.4, color: 'var(--clay-600)',
+          maxWidth: 560, margin: 0,
+        }}>
+          Every screen below is the same live site — <strong style={{ color: 'var(--espresso-900)' }}>index.html</strong> — framed twice. Web on the left, PWA on iPhone on the right. Nothing has been redesigned.
+        </p>
+      </div>
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24,
+        paddingTop: 24, borderTop: '1px solid var(--hairline)',
+      }}>
+        <div>
+          <div className="chip" style={{ marginBottom: 8 }}>9</div>
+          <div style={{ fontFamily: 'var(--f-display)', fontSize: 18, color: 'var(--espresso-900)' }}>
+            Sections framed
+          </div>
+        </div>
+        <div>
+          <div className="chip" style={{ marginBottom: 8 }}>1280 × 760</div>
+          <div style={{ fontFamily: 'var(--f-display)', fontSize: 18, color: 'var(--espresso-900)' }}>
+            Web artboard
+          </div>
+        </div>
+        <div>
+          <div className="chip" style={{ marginBottom: 8 }}>375 × 812</div>
+          <div style={{ fontFamily: 'var(--f-display)', fontSize: 18, color: 'var(--espresso-900)' }}>
+            iPhone artboard
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas
+      title="My Third Space — Screens"
+      subtitle="Web + PWA · same source · framed for review"
+      bg="#E9E4DA"
+    >
+      <DCSection id="cover" title="Overview" subtitle="What you're looking at">
+        <DCArtboard id="cover" label="Cover" width={760} height={520}>
+          <Cover />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="web"
+        title="Web · 1280 wide"
+        subtitle="Desktop responsive — Chrome window framing index.html scrolled to each section"
+      >
+        {SCREENS.map(s => (
+          <DCArtboard key={s.id} id={`web-${s.id}`} label={s.label} width={1280} height={760}>
+            <WebFrame screen={s} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+
+      <DCSection
+        id="mobile"
+        title="PWA · iPhone 14 · 375 × 812"
+        subtitle="Same site, mobile breakpoint — installable PWA on iOS Safari"
+      >
+        {SCREENS.map(s => (
+          <DCArtboard key={s.id} id={`mob-${s.id}`} label={s.label} width={375} height={812}>
+            <MobileFrame screen={s} />
+          </DCArtboard>
+        ))}
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

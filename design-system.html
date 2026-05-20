@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>M3S · Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  body { padding: 0; }
+  .ds-wrap { max-width: 1280px; margin: 0 auto; padding: 80px 40px 120px; }
+  .ds-grid { display: grid; gap: 24px; }
+  .ds-section { margin-top: 96px; scroll-margin-top: 40px; }
+  .ds-section:first-of-type { margin-top: 48px; }
+  .ds-h2 { font-family: var(--f-display); font-size: 44px; font-weight: 400; margin: 0 0 8px; color: var(--espresso-900); letter-spacing: -0.5px; }
+  .ds-eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--clay-600); margin-bottom: 14px; }
+  .ds-lead { font-size: 16px; line-height: 1.6; color: var(--espresso-800); opacity: 0.8; max-width: 640px; margin: 0 0 40px; }
+  .swatch-card {
+    padding: 20px; border-radius: var(--r-md); display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 140px; border: 1px solid var(--hairline);
+  }
+  .swatch-card .name { font-family: var(--f-body); font-size: 14px; font-weight: 600; }
+  .swatch-card .hex { font-family: var(--f-mono); font-size: 11px; letter-spacing: 1px; opacity: 0.75; margin-top: 4px; }
+  .swatch-card .tok { font-family: var(--f-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.7; }
+  .type-row { padding: 24px 0; border-bottom: 1px solid var(--hairline); display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: baseline; }
+  .type-meta { font-family: var(--f-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--clay-600); }
+  .spacing-row { display: flex; align-items: center; gap: 20px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+  .spacing-bar { height: 12px; background: var(--walnut-700); border-radius: 2px; }
+  .toc { position: sticky; top: 40px; align-self: start; }
+  .toc a { display: block; padding: 8px 0; font-family: var(--f-mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--clay-600); text-decoration: none; border-left: 2px solid var(--hairline); padding-left: 16px; }
+  .toc a:hover { color: var(--walnut-700); border-left-color: var(--walnut-700); }
+  .cover {
+    padding: 48px; border-radius: var(--r-xl); background: var(--espresso-900); color: var(--sand-100);
+    display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; margin-bottom: 48px;
+    position: relative; overflow: hidden;
+  }
+  .cover h1 { font-family: var(--f-display); font-size: 88px; font-weight: 400; line-height: 0.95; letter-spacing: -2px; margin: 0; }
+  .cover .meta { font-family: var(--f-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
+  .back-link { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--walnut-700); text-decoration: none; margin-bottom: 32px; }
+  .component-box { padding: 40px; background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--r-lg); }
+</style>
+</head>
+<body>
+<div class="ds-wrap">
+  <a href="index.html" class="back-link">← Back to prototype</a>
+
+  <div class="cover">
+    <div>
+      <div class="meta">Design System · v1.0 · April 2026</div>
+      <h1 style="margin-top: 20px">My Third Space<br/><em style="font-style: italic; opacity: 0.75">A system of calm.</em></h1>
+    </div>
+    <div style="text-align: right">
+      <div class="meta">Brown · Beige · Sage · Terracotta</div>
+      <div style="font-family: var(--f-display); font-size: 44px; line-height: 1; margin-top: 12px">M3S</div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 180px 1fr; gap: 64px">
+    <nav class="toc">
+      <div style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--espresso-900); margin-bottom: 12px;">Contents</div>
+      <a href="#principles">Principles</a>
+      <a href="#color">Color</a>
+      <a href="#type">Typography</a>
+      <a href="#spacing">Spacing &amp; Radius</a>
+      <a href="#elevation">Elevation</a>
+      <a href="#components">Components</a>
+      <a href="#motion">Motion</a>
+    </nav>
+
+    <div>
+      <!-- PRINCIPLES -->
+      <section id="principles" class="ds-section">
+        <div class="ds-eyebrow">01 · Principles</div>
+        <h2 class="ds-h2">Calm is a feature.</h2>
+        <p class="ds-lead">Our interface should feel like the studio itself — warm, unhurried, grounded. Four rules we return to when anything feels off.</p>
+        <div class="ds-grid" style="grid-template-columns: repeat(2, 1fr)">
+          <div class="component-box">
+            <div style="font-family: var(--f-display); font-size: 32px; color: var(--walnut-700)">Warm, not beige</div>
+            <p style="font-size: 14px; line-height: 1.6; margin: 12px 0 0">Earth tones with quiet chroma. Never muddy. Never Instagram-filter. Color should feel like morning light on wood.</p>
+          </div>
+          <div class="component-box">
+            <div style="font-family: var(--f-display); font-size: 32px; color: var(--walnut-700)">Measured, not loud</div>
+            <p style="font-size: 14px; line-height: 1.6; margin: 12px 0 0">Generous whitespace. One headline per screen. Monospace for metadata. Nothing shouts — the content carries.</p>
+          </div>
+          <div class="component-box">
+            <div style="font-family: var(--f-display); font-size: 32px; color: var(--walnut-700)">Serif holds weight</div>
+            <p style="font-size: 14px; line-height: 1.6; margin: 12px 0 0">Display serif for moments of feeling. Sans-serif for getting things done. Mono for facts. Everything in its place.</p>
+          </div>
+          <div class="component-box">
+            <div style="font-family: var(--f-display); font-size: 32px; color: var(--walnut-700)">Human, not corporate</div>
+            <p style="font-size: 14px; line-height: 1.6; margin: 12px 0 0">Copy sounds like a coach talking, not a brand. Specific verbs, first names, honest pricing. No wellness-washing.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLOR -->
+      <section id="color" class="ds-section">
+        <div class="ds-eyebrow">02 · Color</div>
+        <h2 class="ds-h2">Earth, in five registers.</h2>
+        <p class="ds-lead">Primary palette is warm brown + sand. Sage and terracotta accent sparingly — never more than one accent per view.</p>
+
+        <div style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--clay-600); margin: 32px 0 12px">Sand · page + surfaces</div>
+        <div class="ds-grid" style="grid-template-columns: repeat(5, 1fr)">
+          <div class="swatch-card" style="background: #FBF7F0"><div class="tok">sand-50</div><div><div class="name">Paper</div><div class="hex">#FBF7F0</div></div></div>
+          <div class="swatch-card" style="background: #F5EDE0"><div class="tok">sand-100</div><div><div class="name">Linen</div><div class="hex">#F5EDE0</div></div></div>
+          <div class="swatch-card" style="background: #EADBC4"><div class="tok">sand-200</div><div><div class="name">Oat</div><div class="hex">#EADBC4</div></div></div>
+          <div class="swatch-card" style="background: #D9C3A3"><div class="tok">sand-300</div><div><div class="name">Wheat</div><div class="hex">#D9C3A3</div></div></div>
+          <div class="swatch-card" style="background: #C3A781"><div class="tok">sand-400</div><div><div class="name">Hay</div><div class="hex">#C3A781</div></div></div>
+        </div>
+
+        <div style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--clay-600); margin: 32px 0 12px">Brown · primary + ink</div>
+        <div class="ds-grid" style="grid-template-columns: repeat(5, 1fr)">
+          <div class="swatch-card" style="background: #A8825A; color: #fff"><div class="tok" style="opacity:.75">clay-500</div><div><div class="name">Clay</div><div class="hex">#A8825A</div></div></div>
+          <div class="swatch-card" style="background: #8A6640; color: #fff"><div class="tok" style="opacity:.75">clay-600</div><div><div class="name">Saddle</div><div class="hex">#8A6640</div></div></div>
+          <div class="swatch-card" style="background: #5E4228; color: #fff"><div class="tok" style="opacity:.75">walnut-700</div><div><div class="name">Walnut · Primary</div><div class="hex">#5E4228</div></div></div>
+          <div class="swatch-card" style="background: #3E2C1C; color: #fff"><div class="tok" style="opacity:.75">espresso-800</div><div><div class="name">Espresso</div><div class="hex">#3E2C1C</div></div></div>
+          <div class="swatch-card" style="background: #241810; color: #fff"><div class="tok" style="opacity:.75">espresso-900</div><div><div class="name">Ink</div><div class="hex">#241810</div></div></div>
+        </div>
+
+        <div style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--clay-600); margin: 32px 0 12px">Accent · sparingly</div>
+        <div class="ds-grid" style="grid-template-columns: repeat(5, 1fr)">
+          <div class="swatch-card" style="background: #7B8B6F; color: #fff"><div class="tok" style="opacity:.75">sage-500</div><div><div class="name">Sage</div><div class="hex">#7B8B6F</div></div></div>
+          <div class="swatch-card" style="background: #D7DECF"><div class="tok">sage-200</div><div><div class="name">Sage Tint</div><div class="hex">#D7DECF</div></div></div>
+          <div class="swatch-card" style="background: #B86B4B; color: #fff"><div class="tok" style="opacity:.75">terracotta-500</div><div><div class="name">Terracotta</div><div class="hex">#B86B4B</div></div></div>
+          <div class="swatch-card" style="background: #ECCDBF"><div class="tok">terracotta-200</div><div><div class="name">Clay Tint</div><div class="hex">#ECCDBF</div></div></div>
+          <div class="swatch-card" style="background: #C99A3F; color: #fff"><div class="tok" style="opacity:.75">ochre-500</div><div><div class="name">Ochre</div><div class="hex">#C99A3F</div></div></div>
+        </div>
+      </section>
+
+      <!-- TYPOGRAPHY -->
+      <section id="type" class="ds-section">
+        <div class="ds-eyebrow">03 · Typography</div>
+        <h2 class="ds-h2">Three voices, clear roles.</h2>
+        <p class="ds-lead">Instrument Serif carries feeling. Inter carries information. JetBrains Mono carries facts.</p>
+
+        <div class="type-row">
+          <div>
+            <div class="type-meta">Display / D1</div>
+            <div class="type-meta" style="margin-top: 4px">Instrument Serif · 140 / 0.95</div>
+          </div>
+          <div style="font-family: var(--f-display); font-size: 96px; line-height: 0.95; color: var(--espresso-900); letter-spacing: -2px">Aging gracefully.</div>
+        </div>
+        <div class="type-row">
+          <div>
+            <div class="type-meta">Display / D2</div>
+            <div class="type-meta" style="margin-top: 4px">Instrument Serif · 68 / 1.02</div>
+          </div>
+          <div style="font-family: var(--f-display); font-size: 56px; line-height: 1.02; color: var(--espresso-900)">Welcome to my third space.</div>
+        </div>
+        <div class="type-row">
+          <div>
+            <div class="type-meta">Heading / H3</div>
+            <div class="type-meta" style="margin-top: 4px">Instrument Serif · 36 / 1.1</div>
+          </div>
+          <div style="font-family: var(--f-display); font-size: 36px; line-height: 1.1; color: var(--espresso-900)">Your slot, saved.</div>
+        </div>
+        <div class="type-row">
+          <div>
+            <div class="type-meta">Body / Lead</div>
+            <div class="type-meta" style="margin-top: 4px">Inter 400 · 18 / 1.6</div>
+          </div>
+          <div style="font-family: var(--f-body); font-size: 18px; line-height: 1.6; color: var(--espresso-800); max-width: 560px">A holistic studio in the quiet middle of your week — where movement, breath, and measurement meet.</div>
+        </div>
+        <div class="type-row">
+          <div>
+            <div class="type-meta">Body / Default</div>
+            <div class="type-meta" style="margin-top: 4px">Inter 400 · 15 / 1.55</div>
+          </div>
+          <div style="font-family: var(--f-body); font-size: 15px; line-height: 1.55; color: var(--espresso-800); max-width: 560px">Pick a coach and find their next slot, or pick a time that works and we'll match you with the right trainer.</div>
+        </div>
+        <div class="type-row">
+          <div>
+            <div class="type-meta">UI / Button</div>
+            <div class="type-meta" style="margin-top: 4px">Inter 500 · 14</div>
+          </div>
+          <div style="font-family: var(--f-body); font-size: 14px; font-weight: 500; color: var(--walnut-700)">Book a session →</div>
+        </div>
+        <div class="type-row">
+          <div>
+            <div class="type-meta">Meta / Mono</div>
+            <div class="type-meta" style="margin-top: 4px">JetBrains Mono · 11 · 2.5 tracking</div>
+          </div>
+          <div style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--clay-600)">— EST. 2019 · KHAR WEST, MUMBAI</div>
+        </div>
+      </section>
+
+      <!-- SPACING -->
+      <section id="spacing" class="ds-section">
+        <div class="ds-eyebrow">04 · Spacing &amp; Radius</div>
+        <h2 class="ds-h2">4-pt rhythm.</h2>
+        <p class="ds-lead">All spacing is a multiple of 4. Generous by default — the interface should breathe.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px">
+          <div>
+            <div class="ds-eyebrow">Scale</div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-1</span><div class="spacing-bar" style="width: 4px"></div><span class="type-meta" style="margin-left: auto">4px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-2</span><div class="spacing-bar" style="width: 8px"></div><span class="type-meta" style="margin-left: auto">8px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-3</span><div class="spacing-bar" style="width: 12px"></div><span class="type-meta" style="margin-left: auto">12px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-4</span><div class="spacing-bar" style="width: 16px"></div><span class="type-meta" style="margin-left: auto">16px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-6</span><div class="spacing-bar" style="width: 24px"></div><span class="type-meta" style="margin-left: auto">24px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-8</span><div class="spacing-bar" style="width: 32px"></div><span class="type-meta" style="margin-left: auto">32px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-12</span><div class="spacing-bar" style="width: 48px"></div><span class="type-meta" style="margin-left: auto">48px</span></div>
+            <div class="spacing-row"><span class="type-meta" style="width: 60px">s-20</span><div class="spacing-bar" style="width: 80px"></div><span class="type-meta" style="margin-left: auto">80px</span></div>
+          </div>
+          <div>
+            <div class="ds-eyebrow">Radius</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px">
+              <div style="background: var(--sand-100); border: 1px solid var(--hairline); height: 80px; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between"><span class="type-meta">r-sm</span><span style="font-family: var(--f-mono); font-size: 12px">6px</span></div>
+              <div style="background: var(--sand-100); border: 1px solid var(--hairline); height: 80px; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between"><span class="type-meta">r-md</span><span style="font-family: var(--f-mono); font-size: 12px">10px</span></div>
+              <div style="background: var(--sand-100); border: 1px solid var(--hairline); height: 80px; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between"><span class="type-meta">r-lg</span><span style="font-family: var(--f-mono); font-size: 12px">16px</span></div>
+              <div style="background: var(--sand-100); border: 1px solid var(--hairline); height: 80px; border-radius: 24px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between"><span class="type-meta">r-xl</span><span style="font-family: var(--f-mono); font-size: 12px">24px</span></div>
+              <div style="background: var(--sand-100); border: 1px solid var(--hairline); height: 80px; border-radius: 999px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; grid-column: span 2"><span class="type-meta">r-pill</span><span style="font-family: var(--f-mono); font-size: 12px">999 · buttons &amp; chips</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ELEVATION -->
+      <section id="elevation" class="ds-section">
+        <div class="ds-eyebrow">05 · Elevation</div>
+        <h2 class="ds-h2">Three shadows, warm.</h2>
+        <p class="ds-lead">Shadows are tinted with espresso, never gray. Keep them soft — suggest depth, don't shout it.</p>
+        <div class="ds-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 32px">
+          <div style="padding: 40px; background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-1); text-align: center">
+            <div class="type-meta">sh-1</div>
+            <div style="font-family: var(--f-display); font-size: 28px; margin-top: 8px">Whisper</div>
+            <div style="font-family: var(--f-mono); font-size: 10px; margin-top: 12px; opacity: 0.6">Cards at rest</div>
+          </div>
+          <div style="padding: 40px; background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-2); text-align: center">
+            <div class="type-meta">sh-2</div>
+            <div style="font-family: var(--f-display); font-size: 28px; margin-top: 8px">Lift</div>
+            <div style="font-family: var(--f-mono); font-size: 10px; margin-top: 12px; opacity: 0.6">Buttons · popovers</div>
+          </div>
+          <div style="padding: 40px; background: var(--paper); border-radius: var(--r-lg); box-shadow: var(--sh-3); text-align: center">
+            <div class="type-meta">sh-3</div>
+            <div style="font-family: var(--f-display); font-size: 28px; margin-top: 8px">Float</div>
+            <div style="font-family: var(--f-mono); font-size: 10px; margin-top: 12px; opacity: 0.6">Modal · hover cards</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPONENTS -->
+      <section id="components" class="ds-section">
+        <div class="ds-eyebrow">06 · Components</div>
+        <h2 class="ds-h2">The kit.</h2>
+        <p class="ds-lead">A small set, consistently applied.</p>
+
+        <div class="component-box" style="margin-top: 24px">
+          <div class="ds-eyebrow">Buttons</div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 12px">
+            <button style="padding: 12px 22px; border-radius: 999px; background: var(--walnut-700); color: var(--paper); border: none; font-family: var(--f-body); font-size: 14px; font-weight: 500; cursor: pointer">Primary</button>
+            <button style="padding: 12px 22px; border-radius: 999px; background: transparent; color: var(--walnut-700); border: 1px solid var(--walnut-700); font-family: var(--f-body); font-size: 14px; font-weight: 500; cursor: pointer">Secondary</button>
+            <button style="padding: 12px 22px; border-radius: 999px; background: var(--sage-500); color: var(--paper); border: none; font-family: var(--f-body); font-size: 14px; font-weight: 500; cursor: pointer">Sage</button>
+            <button style="padding: 12px 22px; border-radius: 999px; background: var(--terracotta-500); color: var(--paper); border: none; font-family: var(--f-body); font-size: 14px; font-weight: 500; cursor: pointer">Terracotta</button>
+            <button style="padding: 12px 22px; border-radius: 999px; background: transparent; color: var(--walnut-700); border: none; font-family: var(--f-body); font-size: 14px; font-weight: 500; cursor: pointer">Ghost →</button>
+          </div>
+        </div>
+
+        <div class="component-box" style="margin-top: 24px">
+          <div class="ds-eyebrow">Chips</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px">
+            <span style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; background: var(--sand-100); color: var(--walnut-700); border: 1px solid var(--hairline)">Sand</span>
+            <span style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; background: var(--sage-200); color: #4a5a41; border: 1px solid rgba(123,139,111,0.35)">Sage</span>
+            <span style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; background: var(--terracotta-200); color: #7a3f26; border: 1px solid rgba(184,107,75,0.35)">Terracotta</span>
+            <span style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; background: var(--walnut-700); color: var(--paper)">Active</span>
+          </div>
+        </div>
+
+        <div class="ds-grid" style="grid-template-columns: 1fr 1fr; margin-top: 24px">
+          <div class="component-box">
+            <div class="ds-eyebrow">Card · Paper</div>
+            <div style="padding: 24px; background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--r-lg); margin-top: 12px">
+              <div style="font-family: var(--f-display); font-size: 28px">Foundation</div>
+              <div style="font-size: 13px; line-height: 1.6; margin-top: 8px; color: var(--espresso-800)">Default surface for neutral content.</div>
+            </div>
+          </div>
+          <div class="component-box">
+            <div class="ds-eyebrow">Card · Walnut</div>
+            <div style="padding: 24px; background: var(--walnut-700); color: var(--paper); border-radius: var(--r-lg); margin-top: 12px">
+              <div style="font-family: var(--f-display); font-size: 28px">Emphasis</div>
+              <div style="font-size: 13px; line-height: 1.6; margin-top: 8px; opacity: 0.85">For moments that need to land. Use sparingly.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="component-box" style="margin-top: 24px">
+          <div class="ds-eyebrow">Input</div>
+          <input placeholder="you@gmail.com" style="display: block; width: 100%; max-width: 420px; margin-top: 12px; padding: 14px 16px; border-radius: var(--r-md); border: 1.5px solid var(--hairline-strong); background: var(--paper); font-family: var(--f-body); font-size: 16px; outline: none"/>
+        </div>
+
+        <div class="component-box" style="margin-top: 24px">
+          <div class="ds-eyebrow">Eyebrow &amp; Meta</div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px">
+            <span style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--clay-600)">— 01 · FOUNDER'S NOTE</span>
+            <span style="font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--clay-600)">FIG. 01 · STUDIO INTERIOR</span>
+            <span style="font-family: var(--f-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--walnut-700)">#ATMYTHIRDSPACE</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- MOTION -->
+      <section id="motion" class="ds-section">
+        <div class="ds-eyebrow">07 · Motion</div>
+        <h2 class="ds-h2">Slow, confident.</h2>
+        <p class="ds-lead">Motion should feel like a deep breath. No bouncing. No flashing. Default curve: <code style="font-family: var(--f-mono); font-size: 13px; background: var(--sand-100); padding: 2px 6px; border-radius: 4px">ease .2s</code> for UI, <code style="font-family: var(--f-mono); font-size: 13px; background: var(--sand-100); padding: 2px 6px; border-radius: 4px">ease .6s</code> for reveals.</p>
+        <div class="ds-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 24px">
+          <div class="component-box" style="text-align: center">
+            <div class="type-meta">Hover lift</div>
+            <div style="font-family: var(--f-display); font-size: 28px; margin: 16px 0 4px; color: var(--walnut-700)">-4px</div>
+            <div style="font-family: var(--f-mono); font-size: 11px; opacity: 0.6">translateY · .25s</div>
+          </div>
+          <div class="component-box" style="text-align: center">
+            <div class="type-meta">Transition</div>
+            <div style="font-family: var(--f-display); font-size: 28px; margin: 16px 0 4px; color: var(--walnut-700)">200ms</div>
+            <div style="font-family: var(--f-mono); font-size: 11px; opacity: 0.6">ease · UI states</div>
+          </div>
+          <div class="component-box" style="text-align: center">
+            <div class="type-meta">Reveal</div>
+            <div style="font-family: var(--f-display); font-size: 28px; margin: 16px 0 4px; color: var(--walnut-700)">600ms</div>
+            <div style="font-family: var(--f-mono); font-size: 11px; opacity: 0.6">ease-out · scroll in</div>
+          </div>
+        </div>
+      </section>
+
+      <div style="margin-top: 96px; padding: 48px; background: var(--sand-100); border-radius: var(--r-xl); text-align: center">
+        <div class="ds-eyebrow">— END OF SYSTEM</div>
+        <div style="font-family: var(--f-display); font-size: 40px; color: var(--walnut-700); margin-top: 8px">Move slowly. Build carefully.</div>
+        <a href="index.html" style="display: inline-block; margin-top: 24px; padding: 12px 22px; border-radius: 999px; background: var(--walnut-700); color: var(--paper); text-decoration: none; font-family: var(--f-body); font-size: 14px; font-weight: 500">See it in action →</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

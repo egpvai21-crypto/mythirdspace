@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Session A · M3S Client App — Onboarding & Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="tokens.css" />
+
+<style>
+  /* Constrain heavy global responsive overrides from tokens.css to live page only.
+     Inside the canvas frames we want layouts to render at their designed breakpoint. */
+  .design-canvas [style*="grid-template-columns"] { grid-template-columns: revert !important; gap: revert !important; }
+  .design-canvas [style*="padding: 140px"],
+  .design-canvas [style*="padding: 120px"],
+  .design-canvas [style*="padding: 64px"],
+  .design-canvas [style*="padding: 48"],
+  .design-canvas [style*="padding: 40"],
+  .design-canvas [style*="padding: 36"],
+  .design-canvas [style*="padding: 32"] { padding: revert !important; }
+  .design-canvas h1, .design-canvas h2, .design-canvas h3 { font-size: revert !important; line-height: revert !important; }
+  .design-canvas section, .design-canvas footer, .design-canvas header { padding-left: revert !important; padding-right: revert !important; }
+  .design-canvas nav, .design-canvas header > div { flex-wrap: revert !important; }
+
+  /* Hide scrollbars inside frames */
+  .frame-scroll { scrollbar-width: none; }
+  .frame-scroll::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="fitness-score.jsx"></script>
+<script type="text/babel" src="onboarding-flow.jsx"></script>
+<script type="text/babel">
+  const params = new URLSearchParams(window.location.search);
+  const Component = params.get('canvas') === '1' ? OnboardingFlowCanvas : OnboardingFlowPrototype;
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<Component />);
+</script>
+
+</body>
+</html>

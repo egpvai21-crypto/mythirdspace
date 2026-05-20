@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reassignment States · My Third Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; background: var(--sand-50); font-family: var(--f-body); -webkit-font-smoothing: antialiased; }
+
+.stage {
+  min-height: 100vh;
+  padding: 48px 40px 72px;
+  background-color: var(--sand-50);
+  background-image:
+    linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 1060px;
+}
+.section-divider {
+  flex: 1;
+  height: 1px;
+  background: var(--hairline-strong);
+}
+
+.frames-row {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.frame-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.frame-label {
+  text-align: center;
+  width: 324px;
+}
+
+@keyframes progressDrain {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+@keyframes sheetUp {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-up { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+
+const C = {
+  espresso900: '#241810', espresso800: '#3E2C1C',
+  walnut: '#5E4228', clay600: '#8A6640', clay500: '#A8825A',
+  sand50: '#FBF7F0', sand100: '#F5EDE0', sand200: '#EADBC4',
+  paper: '#FFFDF8', sage: '#7B8B6F', terra: '#B86B4B',
+  ochre: '#C99A3F',
+  hair: 'rgba(62,44,28,0.12)', hairStr: 'rgba(62,44,28,0.22)',
+};
+
+const SCALE = 0.83;
+
+// ── Shared chrome ─────────────────────────────────────────────────────────
+function StatusBar() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 24px 0', fontFamily: "-apple-system,'SF Pro Text',system-ui", fontSize: 15, fontWeight: 600, color: C.paper }}>
+      <span>9:41</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <svg width="18" height="12" viewBox="0 0 18 12" fill={C.paper}><rect x="0" y="7" width="3" height="5" rx=".8"/><rect x="4.5" y="4.5" width="3" height="7.5" rx=".8"/><rect x="9" y="2" width="3" height="10" rx=".8"/><rect x="13.5" y="0" width="3" height="12" rx=".8"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><path fill={C.paper} d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm0-3.3c1.4 0 2.7.6 3.6 1.5l1.1-1.1A6.8 6.8 0 0 0 8 4.5a6.8 6.8 0 0 0-4.7 2.1l1.1 1.1C5.3 6.8 6.6 6.2 8 6.2zm0-3.3c2.3 0 4.3.9 5.8 2.4l1.1-1.2A8.5 8.5 0 0 0 8 1.2 8.5 8.5 0 0 0 1.1 4.1l1.1 1.2C3.7 3.8 5.7 2.9 8 2.9z"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x=".5" y=".5" width="22" height="12" rx="3.5" stroke={C.paper} strokeOpacity=".35" fill="none"/><rect x="2" y="2" width="18.5" height="9" rx="2" fill={C.paper}/><path d="M24 4.5v4c.9-.3 1.5-1.1 1.5-2s-.6-1.7-1.5-2z" fill={C.paper} fillOpacity=".4"/></svg>
+      </div>
+    </div>
+  );
+}
+
+function ProfileHeader() {
+  return (
+    <div style={{ background: C.espresso900, padding: '13px 18px 18px', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+      <div style={{ position: 'absolute', top: -40, right: -40, width: 150, height: 150, borderRadius: '50%', background: 'rgba(201,154,63,0.13)', pointerEvents: 'none' }} />
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ width: 48, height: 48, borderRadius: '50%', flexShrink: 0, background: C.walnut, color: C.paper, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic', fontSize: 18 }}>RS</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,253,248,0.48)', marginBottom: 3 }}>Member · since Apr 2025</div>
+          <h1 style={{ fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic', fontWeight: 400, fontSize: 22, lineHeight: 1.08, color: C.paper }}>Riya Sharma</h1>
+          <div style={{ fontFamily: '"Inter",system-ui', fontSize: 11.5, color: 'rgba(255,253,248,0.58)', marginTop: 2 }}>32 · Female · Muscle Gain</div>
+        </div>
+        <div style={{ flexShrink: 0, padding: '7px 10px', borderRadius: 10, background: 'rgba(255,253,248,0.07)', border: '1px solid rgba(255,253,248,0.11)', display: 'flex', alignItems: 'center', gap: 7 }}>
+          <div style={{ width: 28, height: 28, borderRadius: '50%', background: C.sage, color: C.paper, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 10 }}>LE</div>
+          <div>
+            <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 7.5, letterSpacing: '1.3px', textTransform: 'uppercase', color: 'rgba(255,253,248,0.45)' }}>Coach</div>
+            <div style={{ fontFamily: '"Inter",system-ui', fontSize: 12, fontWeight: 600, color: C.paper, marginTop: 1 }}>Lee</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HomeIndicator() {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '14px 0 10px', flexShrink: 0 }}>
+      <div style={{ width: 120, height: 4, borderRadius: 2, background: 'rgba(28,20,14,0.18)' }} />
+    </div>
+  );
+}
+
+function ScrollBody({ children }) {
+  return (
+    <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', background: C.sand50, padding: '13px 13px 0', display: 'flex', flexDirection: 'column', gap: 12, scrollbarWidth: 'none' }}>
+      {children}
+      <HomeIndicator />
+    </div>
+  );
+}
+
+// ── FRAME 1 — ACCEPTED ───────────────────────────────────────────────────
+function SageConfirmStrip() {
+  return (
+    <div className="anim-up" style={{ background: '#EEF5EE', borderLeft: `3px solid ${C.sage}`, borderRadius: '0 10px 10px 0', padding: '12px 14px 12px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 11.5, letterSpacing: '0.6px', color: C.sage, lineHeight: 1.5 }}>
+        ✓ Confirmed with Coach Meera · Tuesday, 29 Apr · 7:00 AM
+      </div>
+      {/* 4-second auto-dismiss progress bar */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, height: 2, background: C.ochre, width: '100%', animation: 'progressDrain 4s linear forwards' }} />
+    </div>
+  );
+}
+
+function ReassignedCard() {
+  return (
+    <div className="anim-up" style={{ animationDelay: '0.1s', background: C.paper, border: `1px solid ${C.hairStr}`, borderRadius: 14, boxShadow: '0 6px 20px -8px rgba(62,44,28,0.18)', overflow: 'hidden' }}>
+      {/* Card header */}
+      <div style={{ padding: '12px 15px', background: C.sand50, borderBottom: `1px solid ${C.hair}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.walnut, flexShrink: 0 }} />
+            <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8.5, letterSpacing: '1.6px', textTransform: 'uppercase', color: C.clay600 }}>Your next session</span>
+          </div>
+          {/* REASSIGNED chip */}
+          <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8, letterSpacing: '1.2px', textTransform: 'uppercase', color: C.ochre, background: 'rgba(201,154,63,0.13)', padding: '2px 7px', borderRadius: 999, border: '1px solid rgba(201,154,63,0.3)', flexShrink: 0 }}>REASSIGNED</div>
+        </div>
+        <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8.5, letterSpacing: '1.2px', textTransform: 'uppercase', color: C.walnut, background: C.sand200, padding: '3px 8px', borderRadius: 999, flexShrink: 0, marginLeft: 6 }}>TUE</div>
+      </div>
+      {/* Details */}
+      <div style={{ padding: '14px 15px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 12, letterSpacing: '0.8px', color: C.espresso900, fontWeight: 500 }}>TUE · 29 APR 2026 · 07:00 AM</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 20, height: 20, borderRadius: '50%', background: C.terra, color: C.paper, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: '"Instrument Serif",serif', fontStyle: 'italic', fontSize: 7.5, flexShrink: 0 }}>ME</div>
+          <div style={{ fontFamily: '"Inter",system-ui', fontSize: 13, fontWeight: 500, color: C.espresso900 }}>Coach Meera · Hypertrophy &amp; Strength</div>
+        </div>
+        <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 10.5, letterSpacing: '0.8px', color: C.clay600 }}>60 MIN · GROUND FLOOR STUDIO</div>
+      </div>
+    </div>
+  );
+}
+
+function Frame1() {
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <ProfileHeader />
+      <ScrollBody>
+        <SageConfirmStrip />
+        <ReassignedCard />
+      </ScrollBody>
+    </div>
+  );
+}
+
+// ── FRAME 2 — CONFIRM DECLINE (bottom sheet) ─────────────────────────────
+function DeclineSheet() {
+  return (
+    <>
+      {/* Scrim */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(36,24,16,0.5)', backdropFilter: 'blur(2px)', zIndex: 10 }} />
+      {/* Sheet */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: C.paper, borderRadius: '20px 20px 0 0', padding: '10px 20px 36px', animation: 'sheetUp 0.4s cubic-bezier(0.22,1,0.36,1)', zIndex: 11 }}>
+        {/* Handle */}
+        <div style={{ width: 36, height: 4, borderRadius: 2, background: 'rgba(62,44,28,0.2)', margin: '0 auto 20px' }} />
+        {/* Headline */}
+        <h2 style={{ fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic', fontWeight: 400, fontSize: 26, color: C.espresso900, lineHeight: 1.1, marginBottom: 12 }}>Are you sure?</h2>
+        {/* Body */}
+        <p style={{ fontFamily: '"Inter",system-ui', fontSize: 14, color: C.espresso800, lineHeight: 1.65, marginBottom: 22 }}>
+          If you decline, this session will be voided and 1 session credit will be added to your package. You can book a future session with Coach Lee when they're available.
+        </p>
+        {/* CTAs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button style={{ width: '100%', padding: '13px 18px', borderRadius: 999, border: 'none', background: C.terra, color: C.paper, fontFamily: '"Inter",system-ui', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+            Yes, decline &amp; credit me
+          </button>
+          <button style={{ width: '100%', padding: '12px 18px', borderRadius: 999, border: '1.5px solid rgba(184,107,75,0.42)', background: 'transparent', color: C.terra, fontFamily: '"Inter",system-ui', fontSize: 14, fontWeight: 500, cursor: 'pointer' }}>
+            Go back
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Frame2() {
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
+      {/* Background — dimmed profile content */}
+      <div style={{ opacity: 0.28, flexShrink: 0 }}>
+        <ProfileHeader />
+      </div>
+      <div style={{ flex: 1, background: C.sand50, opacity: 0.28, padding: '13px 13px 0' }}>
+        {/* Ghost amber banner */}
+        <div style={{ background: '#FEF0CC', borderLeft: `3px solid ${C.terra}`, borderRadius: '0 10px 10px 0', padding: '11px 13px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 7 }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.terra }} />
+            <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9, letterSpacing: '1.6px', textTransform: 'uppercase', color: C.terra }}>ACTION NEEDED</span>
+          </div>
+          <div style={{ fontFamily: '"Inter",system-ui', fontSize: 13, fontWeight: 600, color: C.espresso900 }}>Your session has been updated</div>
+        </div>
+      </div>
+      {/* Sheet overlay on top */}
+      <DeclineSheet />
+    </div>
+  );
+}
+
+// ── FRAME 3 — DECLINED (post-confirmation) ────────────────────────────────
+function NeutralStrip() {
+  return (
+    <div className="anim-up" style={{ background: C.sand100, borderLeft: `3px solid ${C.clay500}`, borderRadius: '0 10px 10px 0', padding: '12px 14px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+        <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.clay500, flexShrink: 0 }} />
+        <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9.5, letterSpacing: '1.4px', textTransform: 'uppercase', color: C.clay600 }}>
+          Session voided · 1 credit added to your package
+        </span>
+      </div>
+      <p style={{ fontFamily: '"Inter",system-ui', fontSize: 12, fontStyle: 'italic', color: C.clay600, lineHeight: 1.6 }}>
+        Your credit will appear in your package summary within a few minutes.
+      </p>
+    </div>
+  );
+}
+
+function NoUpcomingCard() {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <div className="anim-up" style={{ animationDelay: '0.1s', background: C.paper, border: `1px solid ${C.hairStr}`, borderRadius: 14, padding: '18px 16px', boxShadow: '0 6px 20px -8px rgba(62,44,28,0.18)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 10 }}>
+        <span style={{ width: 5, height: 5, borderRadius: '50%', background: C.walnut, flexShrink: 0 }} />
+        <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 8.5, letterSpacing: '1.6px', textTransform: 'uppercase', color: C.clay600 }}>Your next session</span>
+      </div>
+      <div style={{ fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic', fontSize: 20, color: C.espresso900, lineHeight: 1.15, marginBottom: 14 }}>
+        No upcoming sessions.
+      </div>
+      <div
+        onMouseEnter={() => setHov(true)}
+        onMouseLeave={() => setHov(false)}
+        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontFamily: '"Inter",system-ui', fontSize: 14, fontWeight: 600, color: hov ? C.espresso900 : C.walnut, cursor: 'pointer', transition: 'color .15s' }}>
+        Book your next with Coach Lee <span>→</span>
+      </div>
+    </div>
+  );
+}
+
+function Frame3() {
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <ProfileHeader />
+      <ScrollBody>
+        <NeutralStrip />
+        <NoUpcomingCard />
+      </ScrollBody>
+    </div>
+  );
+}
+
+// ── Phone frame shell ─────────────────────────────────────────────────────
+function PhoneFrame({ children }) {
+  return (
+    <div style={{ width: 390, height: 844, background: '#141010', borderRadius: 54, position: 'relative', boxShadow: ['0 0 0 1.5px rgba(255,255,255,0.10)', '0 0 0 3px rgba(0,0,0,0.55)', '0 60px 120px -30px rgba(14,8,4,0.68)', '0 24px 60px -20px rgba(14,8,4,0.42)'].join(', ') }}>
+      <div style={{ position: 'absolute', top: 13, left: '50%', transform: 'translateX(-50%)', width: 124, height: 36, background: '#141010', borderRadius: 20, zIndex: 30 }} />
+      <div style={{ position: 'absolute', inset: 3, borderRadius: 50, overflow: 'hidden', display: 'flex', flexDirection: 'column', background: C.espresso900 }}>
+        <StatusBar />
+        <div style={{ height: 14, flexShrink: 0, background: C.espresso900 }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function ScaledPhone({ children }) {
+  return (
+    <div style={{ width: 390 * SCALE, height: 844 * SCALE, flexShrink: 0 }}>
+      <div style={{ transform: `scale(${SCALE})`, transformOrigin: 'top left', width: 390, height: 844 }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ── Labels ────────────────────────────────────────────────────────────────
+function FrameLabel({ num, title, sub }) {
+  return (
+    <div style={{ textAlign: 'center', width: 390 * SCALE }}>
+      <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9.5, letterSpacing: '1.8px', textTransform: 'uppercase', color: C.clay600, marginBottom: 5 }}>{num}</div>
+      <div style={{ fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic', fontSize: 18, color: C.espresso900, marginBottom: 5 }}>{title}</div>
+      <div style={{ fontFamily: '"Inter",system-ui', fontSize: 12, color: C.clay600, lineHeight: 1.5 }}>{sub}</div>
+    </div>
+  );
+}
+
+function SectionHead({ label }) {
+  return (
+    <div className="section-head">
+      <div style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 9, letterSpacing: '2px', textTransform: 'uppercase', color: C.clay600, whiteSpace: 'nowrap' }}>{label}</div>
+      <div className="section-divider" />
+    </div>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────
+function App() {
+  return (
+    <div className="stage">
+      <SectionHead label="Mobile · After reassignment response · Screen 5 follow-on states" />
+
+      <div className="frames-row">
+        {/* Frame 1 */}
+        <div className="frame-col">
+          <FrameLabel
+            num="01 · ACCEPTED"
+            title="Confirmed with Meera"
+            sub="Sage strip replaces banner. 4-second progress bar. Session card updates with REASSIGNED tag and Coach Meera."
+          />
+          <ScaledPhone>
+            <PhoneFrame><Frame1 /></PhoneFrame>
+          </ScaledPhone>
+        </div>
+
+        {/* Frame 2 */}
+        <div className="frame-col">
+          <FrameLabel
+            num="02 · CONFIRM DECLINE"
+            title="Are you sure?"
+            sub="Bottom sheet over dimmed profile. No dismiss — only the two CTAs resolve it."
+          />
+          <ScaledPhone>
+            <PhoneFrame><Frame2 /></PhoneFrame>
+          </ScaledPhone>
+        </div>
+
+        {/* Frame 3 */}
+        <div className="frame-col">
+          <FrameLabel
+            num="03 · DECLINED"
+            title="Session voided"
+            sub="Neutral muted strip confirms credit. No session card — replaced with booking prompt."
+          />
+          <ScaledPhone>
+            <PhoneFrame><Frame3 /></PhoneFrame>
+          </ScaledPhone>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

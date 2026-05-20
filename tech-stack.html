@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT CMS — Tech Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  body { background: var(--sand-50); color: var(--ink); }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 64px 48px 120px; }
+  .eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay-600); }
+  h1.title { font-family: var(--f-display); font-size: clamp(56px, 7vw, 108px); line-height: 0.98; font-weight: 400; margin: 8px 0 0; letter-spacing: -0.02em; }
+  h1.title em { font-style: italic; color: var(--clay-600); }
+  .lede { max-width: 760px; margin-top: 24px; font-size: 18px; line-height: 1.55; color: #3a2e22; }
+
+  /* Principles */
+  .principles { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 48px; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+  .principles > div { padding: 20px; border-right: 1px solid var(--hairline); }
+  .principles > div:last-child { border-right: none; }
+  .principles .k { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--clay-600); }
+  .principles .v { font-family: var(--f-display); font-size: 22px; margin-top: 6px; line-height: 1.15; }
+
+  /* The stack diagram */
+  .stack-diagram {
+    margin-top: 64px; background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--r-xl);
+    padding: 32px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .stack-diagram .row { display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 24px; }
+  .stack-diagram .label {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600);
+    text-align: right; padding-right: 20px; border-right: 1px solid var(--hairline);
+  }
+  .stack-diagram .layer {
+    display: flex; gap: 10px; flex-wrap: wrap; padding: 14px 20px; border-radius: var(--r-md); font-size: 14px;
+    background: var(--sand-100); border: 1px solid var(--hairline); align-items: center;
+  }
+  .stack-diagram .layer strong { font-weight: 600; font-size: 15px; color: var(--espresso-800); }
+  .stack-diagram .layer span.ghost { color: var(--clay-600); font-family: var(--f-mono); font-size: 12px; }
+  .stack-diagram .layer.accent-a { background: var(--sage-200); }
+  .stack-diagram .layer.accent-b { background: var(--terracotta-200); }
+  .stack-diagram .layer.accent-c { background: #E8DDF0; }
+  .stack-diagram .layer.accent-d { background: #F0E4C2; }
+  .stack-diagram .layer.accent-e { background: #D9E4E0; }
+
+  /* Section heads */
+  section { margin-top: 96px; }
+  .sec-head { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: end; padding-bottom: 14px; border-bottom: 2px solid var(--ink); }
+  .sec-num { font-family: var(--f-display); font-size: 88px; line-height: 0.85; color: var(--walnut-700); letter-spacing: -0.03em; }
+  .sec-title { font-family: var(--f-display); font-size: 44px; line-height: 1; font-weight: 400; letter-spacing: -0.01em; }
+  .sec-intro { max-width: 820px; margin: 16px 0 28px; font-size: 15.5px; line-height: 1.6; color: #3a2e22; }
+
+  /* Pick cards */
+  .picks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .pick { background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--r-lg); padding: 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--sh-1); position: relative; }
+  .pick .id { position: absolute; top: 16px; right: 20px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--clay-600); }
+  .pick .bucket { display: inline-flex; width: fit-content; padding: 4px 10px; border-radius: var(--r-pill); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .pick .bucket.frontend { background: var(--sand-200); color: var(--espresso-800); }
+  .pick .bucket.backend { background: var(--sage-200); color: #3f5436; }
+  .pick .bucket.db { background: var(--terracotta-200); color: #6d3720; }
+  .pick .bucket.ai { background: #E8DDF0; color: #4a2f5e; }
+  .pick .bucket.realtime { background: #F0E4C2; color: #6b5518; }
+  .pick .bucket.integrations { background: #D9E4E0; color: #2f4a44; }
+  .pick .bucket.infra { background: #EADBC4; color: var(--espresso-800); }
+  .pick h3 { font-family: var(--f-display); font-size: 30px; font-weight: 400; letter-spacing: -0.01em; margin: 0; line-height: 1.1; }
+  .pick h3 .alt { color: var(--clay-600); font-size: 16px; font-family: var(--f-mono); letter-spacing: 0.06em; display: block; margin-top: 4px; }
+  .pick p { margin: 0; font-size: 14px; line-height: 1.55; color: #3a2e22; }
+  .pick .why { border-left: 3px solid var(--walnut-700); padding-left: 12px; }
+  .pick .why .h { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600); }
+  .pick .why ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.55; color: #3a2e22; }
+  .pick .notpick { border-left: 3px solid var(--terracotta-500); padding-left: 12px; }
+  .pick .notpick .h { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600); }
+  .pick .notpick ul { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.55; color: #5a4a3a; }
+  .pick .feature-map {
+    margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--hairline);
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+  }
+  .pick .feature-map .lbl { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--clay-600); margin-right: 4px; }
+  .chip { font-family: var(--f-mono); font-size: 10.5px; padding: 3px 8px; border-radius: 4px; background: var(--sand-100); border: 1px solid var(--hairline); color: var(--espresso-800); }
+
+  /* Data-flow diagram */
+  .dataflow { margin-top: 32px; background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--r-xl); padding: 32px; }
+  .df-grid { display: grid; grid-template-columns: 1fr 40px 1.2fr 40px 1fr; gap: 0; align-items: center; }
+  .df-col { display: flex; flex-direction: column; gap: 10px; }
+  .df-col h5 { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600); margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid var(--hairline); }
+  .df-node { padding: 12px 14px; border-radius: var(--r-md); background: var(--sand-100); border: 1px solid var(--hairline); font-size: 13px; line-height: 1.35; }
+  .df-node .tag { font-family: var(--f-mono); font-size: 10px; color: var(--clay-600); letter-spacing: 0.08em; display: block; margin-bottom: 2px; }
+  .df-node.primary { background: var(--sage-200); border-color: #c0cbb0; }
+  .df-node.ai { background: #E8DDF0; }
+  .df-arrow { display: flex; align-items: center; justify-content: center; color: var(--clay-600); font-size: 20px; }
+
+  /* Timeline */
+  .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 32px; }
+  .tl { padding: 24px; border-radius: var(--r-lg); border: 1px solid var(--hairline); }
+  .tl.p1 { background: var(--sand-100); }
+  .tl.p2 { background: var(--sage-200); }
+  .tl.p3 { background: var(--terracotta-200); }
+  .tl .k { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600); }
+  .tl h4 { font-family: var(--f-display); font-size: 26px; font-weight: 400; margin: 6px 0 10px; letter-spacing: -0.01em; }
+  .tl ul { padding-left: 18px; margin: 0; font-size: 13.5px; line-height: 1.6; color: #3a2e22; }
+
+  /* Risks */
+  .risks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 32px; }
+  .risk { background: var(--paper); border: 1px solid var(--hairline); border-left: 4px solid var(--terracotta-500); border-radius: var(--r-md); padding: 22px; }
+  .risk .k { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terracotta-500); }
+  .risk h5 { font-family: var(--f-display); font-size: 22px; font-weight: 400; margin: 6px 0 10px; letter-spacing: -0.01em; }
+  .risk p { margin: 0; font-size: 13.5px; line-height: 1.55; color: #3a2e22; }
+
+  /* Cost strip */
+  .cost { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 32px; border: 1px solid var(--hairline); border-radius: var(--r-lg); overflow: hidden; }
+  .cost > div { padding: 20px; border-right: 1px solid var(--hairline); background: var(--paper); }
+  .cost > div:last-child { border-right: none; }
+  .cost .k { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--clay-600); }
+  .cost .v { font-family: var(--f-display); font-size: 30px; margin-top: 4px; }
+  .cost .sub { font-size: 12px; color: #5a4a3a; margin-top: 4px; font-family: var(--f-mono); }
+
+  .version { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--hairline); display: flex; justify-content: space-between; gap: 24px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; color: var(--clay-600); text-transform: uppercase; }
+
+  @media (max-width: 1024px) {
+    .wrap { padding: 40px 24px 80px; }
+    .picks, .timeline, .risks { grid-template-columns: 1fr; }
+    .principles, .cost { grid-template-columns: repeat(2, 1fr); }
+    .principles > div:nth-child(2), .cost > div:nth-child(2) { border-right: none; }
+    .df-grid { grid-template-columns: 1fr; }
+    .df-arrow { transform: rotate(90deg); padding: 8px 0; }
+    .stack-diagram .row { grid-template-columns: 1fr; }
+    .stack-diagram .label { text-align: left; padding-right: 0; padding-bottom: 8px; border-right: none; border-bottom: 1px solid var(--hairline); }
+    .sec-head { grid-template-columns: 1fr; gap: 6px; }
+    .sec-num { font-size: 64px; }
+    .sec-title { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="eyebrow">My Third Space · PT CMS · Tech recommendation · v1_240426</div>
+  <h1 class="title">A stack built<br>for <em>iteration</em></h1>
+  <p class="lede">Opinionated picks for the PWA-first PT management system — optimised for how fast a two-or-three-person team can ship, re-ship, and adjust. We trade some engineering elegance for velocity on purpose: buy the commodity bits, build the differentiated bits, and avoid anything that needs a dedicated DevOps shift.</p>
+
+  <div class="principles">
+    <div><div class="k">Principle 01</div><div class="v">Managed over self-hosted</div></div>
+    <div><div class="k">Principle 02</div><div class="v">TypeScript end-to-end</div></div>
+    <div><div class="k">Principle 03</div><div class="v">One primary DB, one job queue</div></div>
+    <div><div class="k">Principle 04</div><div class="v">Ship small, feature-flag big</div></div>
+  </div>
+
+  <!-- ============ STACK AT A GLANCE ============ -->
+  <div class="stack-diagram">
+    <div class="row">
+      <div class="label">Client</div>
+      <div class="layer accent-a"><strong>Next.js 15</strong> · App Router · PWA manifest · Tailwind · shadcn/ui · TanStack Query <span class="ghost">— one codebase for web, installs to home screen, Capacitor wraps later</span></div>
+    </div>
+    <div class="row">
+      <div class="label">Realtime + API</div>
+      <div class="layer accent-d"><strong>Supabase</strong> <span class="ghost">— Postgres + Auth + Row-Level Security + Realtime channels + Storage + Edge Functions</span></div>
+    </div>
+    <div class="row">
+      <div class="label">Background jobs</div>
+      <div class="layer accent-b"><strong>Inngest</strong> <span class="ghost">— durable queues for AI summaries, BCA ingestion, notification fan-out, cal-sync</span></div>
+    </div>
+    <div class="row">
+      <div class="label">AI</div>
+      <div class="layer accent-c"><strong>Claude</strong> (profile summary, programming drafts) · <strong>OpenAI</strong> (Whisper for voice notes, vision fallback for BCA) · <strong>Vercel AI SDK</strong> <span class="ghost">— streamed UI, typed tool calls</span></div>
+    </div>
+    <div class="row">
+      <div class="label">Integrations</div>
+      <div class="layer accent-e"><strong>Nylas</strong> (Google + Apple Cal sync) · <strong>Terra</strong> or <strong>Rook</strong> (wearables) · <strong>Web Bluetooth</strong> (BCA) · <strong>Stripe</strong> (payments)</div>
+    </div>
+    <div class="row">
+      <div class="label">Delivery</div>
+      <div class="layer accent-a"><strong>Vercel</strong> hosting · <strong>Resend</strong> email · <strong>Knock</strong> or <strong>OneSignal</strong> push · <strong>Sentry</strong> · <strong>PostHog</strong> · <strong>GitHub Actions</strong></div>
+    </div>
+    <div class="row">
+      <div class="label">Native (Phase 3)</div>
+      <div class="layer accent-b"><strong>Capacitor</strong> wrapping the same Next.js build <span class="ghost">— adds push, biometric unlock, deeper HealthKit access without rewriting the product</span></div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 1 — FRONTEND ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-title">Frontend — one PWA that survives into native</div>
+    </div>
+    <p class="sec-intro">The web app is the primary surface for MVP and Beta; the Phase 3 native wrappers reuse the same bundle. Choose a framework that renders fast on mid-range Android, has great form + data primitives, and can be wrapped by Capacitor without rewrite.</p>
+
+    <div class="picks">
+
+      <div class="pick">
+        <span class="id">FE-01</span>
+        <span class="bucket frontend">Framework</span>
+        <h3>Next.js 15 (App Router) <span class="alt">React 19 · TypeScript</span></h3>
+        <p>Single framework for marketing pages, authenticated client portal, and coach universe. Server components keep dashboards snappy, client components handle booking interactivity.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>PWA-ready out of the box; Capacitor wraps the build for Phase 3 native.</li>
+          <li>Vercel deploy in under a minute per commit — matches "fast iteration."</li>
+          <li>Huge library ecosystem; any open question has a shadcn recipe.</li>
+        </ul></div>
+        <div class="notpick"><div class="h">Why not Remix / SvelteKit / Expo-web</div><ul>
+          <li>Remix: great, but smaller UI-kit ecosystem for internal dashboards.</li>
+          <li>Expo-first would force mobile decisions we've deliberately deferred.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-01</span><span class="chip">M-02</span><span class="chip">M-06</span><span class="chip">L-01</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">FE-02</span>
+        <span class="bucket frontend">UI system</span>
+        <h3>Tailwind + shadcn/ui <span class="alt">Radix primitives · Lucide icons</span></h3>
+        <p>shadcn gives us owned, editable components instead of a black-box library. Lands the M3S design tokens (already in <code>tokens.css</code>) directly onto accessible primitives.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Copy-paste components = easy to restyle in M3S earth palette.</li>
+          <li>Radix handles accessibility for modals, combobox, date picker correctly.</li>
+          <li>No lock-in; we own every file.</li>
+        </ul></div>
+        <div class="notpick"><div class="h">Why not Chakra / MUI</div><ul>
+          <li>Heavy bundle, opinionated aesthetic fights the M3S brand.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">entire UI</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">FE-03</span>
+        <span class="bucket frontend">Data &amp; forms</span>
+        <h3>TanStack Query + React Hook Form + Zod</h3>
+        <p>Query handles cache, retries, optimistic updates (critical for booking UX). RHF + Zod make the onboarding form, health vault uploads, and policy config maintainable and typed end-to-end.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Zod schemas double as Supabase validators and AI tool-call schemas.</li>
+          <li>Optimistic booking feels instant; rolls back cleanly on policy rejection.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-02</span><span class="chip">M-06</span><span class="chip">M-09</span><span class="chip">B-04</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">FE-04</span>
+        <span class="bucket frontend">PWA + native path</span>
+        <h3>next-pwa → Capacitor</h3>
+        <p>MVP ships as an installable PWA (service worker, manifest, offline shell). Phase 3 wraps the same <code>next build</code> in Capacitor for iOS and Android to unlock push, biometric unlock, HealthKit.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>No rewrite to go native — the app-store presence is a packaging step.</li>
+          <li>Bluetooth BCA and wearables work in the web layer <em>or</em> native shell.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-01</span><span class="chip">B-02</span><span class="chip">L-01</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2 — BACKEND ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-title">Backend — Supabase as the default, not the ceiling</div>
+    </div>
+    <p class="sec-intro">Supabase is the unfair-advantage layer: one service gives us Postgres, auth, row-level security, realtime subscriptions, file storage, and edge functions. That removes the three things that normally slow a small team down — wiring auth, setting up realtime, and building a file-upload pipeline.</p>
+
+    <div class="picks">
+
+      <div class="pick">
+        <span class="id">BE-01</span>
+        <span class="bucket backend">Platform</span>
+        <h3>Supabase <span class="alt">Postgres · Auth · Storage · Realtime · Edge Fns</span></h3>
+        <p>Managed Postgres with row-level security; auth with email + phone OTP; realtime channels we use for live calendar updates; storage buckets for health records and BCA photos.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>RLS gives client-side queries that are still safe — cuts huge volumes of API code.</li>
+          <li>Realtime Postgres changefeeds power the live calendar grid with no extra infra.</li>
+          <li>Phone + email OTP built in — ships M-01 in hours, not weeks.</li>
+        </ul></div>
+        <div class="notpick"><div class="h">Why not Firebase / custom Node+Postgres</div><ul>
+          <li>Firebase: NoSQL makes relational coach↔client↔session logic painful.</li>
+          <li>Roll-your-own: six weeks of plumbing we don't need to buy yet.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-01</span><span class="chip">M-04</span><span class="chip">M-05</span><span class="chip">M-06</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">BE-02</span>
+        <span class="bucket db">Database shape</span>
+        <h3>Postgres + Drizzle ORM <span class="alt">Supabase-managed</span></h3>
+        <p>A real relational schema keeps coach ↔ client ↔ session ↔ note ↔ program joins honest. Drizzle gives us typed queries that match our Zod schemas, so AI tool calls and UI forms share one source of truth.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Structured onboarding data is the precondition for AI summaries (B-01).</li>
+          <li>Migrations with Drizzle Kit are reviewable Git diffs, not dashboard clicks.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-02</span><span class="chip">M-07</span><span class="chip">B-01</span><span class="chip">L-02</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">BE-03</span>
+        <span class="bucket realtime">Realtime calendar</span>
+        <h3>Supabase Realtime <span class="alt">Postgres changefeeds</span></h3>
+        <p>Coach calendar + booking is built on a single <code>sessions</code> table; clients subscribe to the coach's channel, and every insert / update / delete reflects instantly in the grid. No separate socket server.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Solves the "two clients book the same slot" race with DB-level constraints + live push.</li>
+          <li>Reuses the same auth + RLS; a client can only subscribe to coaches they're permitted to see.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-05</span><span class="chip">M-06</span><span class="chip">M-10</span><span class="chip">B-08</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">BE-04</span>
+        <span class="bucket backend">Background jobs</span>
+        <h3>Inngest <span class="alt">Event-driven · durable</span></h3>
+        <p>Any work that shouldn't block a user request: AI summary generation, notification fan-out, BCA photo ingestion, nightly cal-sync, invoice roll-ups. Retries, concurrency caps, and cron built in.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>One event bus for M-12 notifications, B-01 AI, B-08 cal sync — not three systems.</li>
+          <li>Free tier covers the pilot; scales without re-architecting.</li>
+        </ul></div>
+        <div class="notpick"><div class="h">Why not BullMQ + Redis</div><ul>
+          <li>Needs a Redis we'd have to run and monitor — violates "managed over self-hosted."</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-12</span><span class="chip">B-01</span><span class="chip">B-02</span><span class="chip">B-09</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3 — AI ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-title">AI — structured inputs in, structured outputs out</div>
+    </div>
+    <p class="sec-intro">The AI surface has two distinct shapes: <strong>profile summarisation</strong> (batch, runs on new intake data, coach reviews) and <strong>programming drafts</strong> (on-demand, inline, editable). Both need structured schemas — free-text onboarding will never summarise well.</p>
+
+    <div class="picks">
+
+      <div class="pick">
+        <span class="id">AI-01</span>
+        <span class="bucket ai">Primary model</span>
+        <h3>Claude Sonnet 4.5 <span class="alt">via Vercel AI SDK</span></h3>
+        <p>Summarisation and programming-draft tasks are long-context and require careful clinical tone. Claude handles nuanced health language and refuses dangerous recommendations cleanly.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Strong on structured JSON outputs when paired with Zod schemas.</li>
+          <li>Long context window holds full client history + session log for programming drafts.</li>
+          <li>Tool-calling lets the model query session notes it needs on demand.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-01</span><span class="chip">L-02</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">AI-02</span>
+        <span class="bucket ai">Secondary models</span>
+        <h3>OpenAI for voice &amp; vision <span class="alt">Whisper · GPT-4o mini vision</span></h3>
+        <p>Whisper transcribes voice coach-notes (hands full during a session). GPT-4o-mini vision is the fallback for BCA photo intake when Bluetooth isn't available.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Pay-per-use, no model hosting; these are narrow, discrete tasks.</li>
+          <li>Multi-provider avoids single-vendor risk as models shift.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-07</span><span class="chip">B-02</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">AI-03</span>
+        <span class="bucket ai">Orchestration</span>
+        <h3>Vercel AI SDK + typed tool calls</h3>
+        <p>Unified client for Claude and OpenAI with streamed UI support. Tool calls use Zod schemas — the model can only ask for data that actually exists in our DB.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Streamed profile summaries feel fast even when they take 8–10 s.</li>
+          <li>Type-safe tool schemas eliminate the "model hallucinated a field" class of bug.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-01</span><span class="chip">L-02</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">AI-04</span>
+        <span class="bucket ai">Evaluation</span>
+        <h3>Braintrust or LangSmith</h3>
+        <p>Every AI output is reviewable: log inputs, outputs, coach accept/edit/reject. Used as the eval loop for B-01 before we graduate to L-02.</p>
+        <div class="why"><div class="h">Why</div><ul>
+          <li>Coach edits become training signal — we know when a prompt stops working.</li>
+          <li>Required for health-adjacent AI: audit trail, not a black box.</li>
+        </ul></div>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-01</span><span class="chip">L-02</span></div>
+      </div>
+
+    </div>
+
+    <!-- data flow -->
+    <div class="dataflow">
+      <div class="df-grid">
+        <div class="df-col">
+          <h5>Inputs (structured)</h5>
+          <div class="df-node"><span class="tag">M-02</span>Onboarding schema (Zod)</div>
+          <div class="df-node"><span class="tag">M-03</span>Body composition tables</div>
+          <div class="df-node"><span class="tag">M-04</span>Health records (PDF text)</div>
+          <div class="df-node"><span class="tag">B-03</span>Wearable 7-day rollup</div>
+        </div>
+        <div class="df-arrow">→</div>
+        <div class="df-col">
+          <h5>AI layer</h5>
+          <div class="df-node primary"><span class="tag">AI-03</span>Vercel AI SDK · tool calls</div>
+          <div class="df-node ai"><span class="tag">AI-01</span>Claude · profile summary</div>
+          <div class="df-node ai"><span class="tag">AI-01</span>Claude · programming draft</div>
+          <div class="df-node ai"><span class="tag">AI-02</span>Whisper · voice-note text</div>
+          <div class="df-node"><span class="tag">AI-04</span>Braintrust eval log</div>
+        </div>
+        <div class="df-arrow">→</div>
+        <div class="df-col">
+          <h5>Outputs (human-edited)</h5>
+          <div class="df-node"><span class="tag">B-01</span>Coach briefing card</div>
+          <div class="df-node"><span class="tag">L-02</span>Draft session plan</div>
+          <div class="df-node"><span class="tag">M-07</span>Cleaned session note</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 4 — INTEGRATIONS ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-title">Integrations — buy, don't build</div>
+    </div>
+    <p class="sec-intro">Every integration on this list is a domain we should never build from scratch. Pick a vendor, pay for the time back, move on.</p>
+
+    <div class="picks">
+
+      <div class="pick">
+        <span class="id">IN-01</span>
+        <span class="bucket integrations">Calendar sync</span>
+        <h3>Nylas <span class="alt">Google + Apple + Outlook</span></h3>
+        <p>Two-way sync of coach personal calendars into the booking grid. One API, one billing line, all three major providers. Auto-blocks M3S slots when a coach has an external event.</p>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-08</span><span class="chip">M-10</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">IN-02</span>
+        <span class="bucket integrations">Wearables</span>
+        <h3>Terra <span class="alt">Apple Health · Google Fit · Garmin · Oura · Whoop</span></h3>
+        <p>Normalises HR, steps, sleep, workouts across every wearable into a single shape we can aggregate weekly. Avoids writing a different Bluetooth / OAuth flow per device.</p>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-03</span><span class="chip">L-02</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">IN-03</span>
+        <span class="bucket integrations">BCA scales</span>
+        <h3>Web Bluetooth API <span class="alt">Inbody · Tanita</span></h3>
+        <p>Most modern BCA scales advertise over standard Bluetooth GATT profiles and the Web Bluetooth API is now well-supported on Chrome / Edge Android. Capacitor Bluetooth plugin covers iOS in Phase 3.</p>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-02</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">IN-04</span>
+        <span class="bucket integrations">Payments</span>
+        <h3>Stripe <span class="alt">Checkout · Billing · Connect</span></h3>
+        <p>Trial-class charges, cancellation fees, nutrition subscriptions, Kenco café orders, coach payouts via Connect. One vendor across the whole money surface.</p>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">B-05</span><span class="chip">B-09</span><span class="chip">B-11</span><span class="chip">L-05</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">IN-05</span>
+        <span class="bucket integrations">Notifications</span>
+        <h3>Knock <span class="alt">or Resend + OneSignal</span></h3>
+        <p>Unified API for email + SMS + push + in-app notification. Template workflows ("session reminder 24h / 2h") are config, not code.</p>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">M-12</span></div>
+      </div>
+
+      <div class="pick">
+        <span class="id">IN-06</span>
+        <span class="bucket integrations">Observability</span>
+        <h3>Sentry + PostHog + BetterStack</h3>
+        <p>Errors, product analytics, uptime. PostHog feature flags run the "small, flag big" rollout strategy — turn any feature off per user or cohort in seconds.</p>
+        <div class="feature-map"><span class="lbl">Powers</span><span class="chip">entire app</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5 — PHASING THE STACK ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-title">Phasing — ship only what you need each phase</div>
+    </div>
+    <p class="sec-intro">Every tool above has a clear phase it earns its keep. Start with the smaller set; add as features demand.</p>
+
+    <div class="timeline">
+      <div class="tl p1">
+        <div class="k">Phase 1 · MVP · wks 0–6</div>
+        <h4>Minimum viable plumbing</h4>
+        <ul>
+          <li>Next.js 15 + Tailwind + shadcn/ui</li>
+          <li>Supabase (Postgres + Auth + Storage + Realtime)</li>
+          <li>Drizzle ORM + Zod</li>
+          <li>Inngest (notifications + cron only)</li>
+          <li>Knock or Resend for email</li>
+          <li>Sentry + PostHog</li>
+          <li>Vercel + GitHub Actions</li>
+        </ul>
+      </div>
+      <div class="tl p2">
+        <div class="k">Phase 2 · Beta · wks 6–14</div>
+        <h4>Add intelligence &amp; integrations</h4>
+        <ul>
+          <li>Vercel AI SDK + Claude (B-01)</li>
+          <li>OpenAI Whisper + vision (M-07, B-02)</li>
+          <li>Braintrust eval loop</li>
+          <li>Terra wearables (B-03)</li>
+          <li>Web Bluetooth BCA (B-02)</li>
+          <li>Nylas calendar sync (B-08)</li>
+          <li>Stripe (B-05, B-09, B-11)</li>
+        </ul>
+      </div>
+      <div class="tl p3">
+        <div class="k">Phase 3 · Launch · wks 14–24+</div>
+        <h4>Scale &amp; ship native</h4>
+        <ul>
+          <li>Capacitor iOS + Android wrappers (L-01)</li>
+          <li>Adaptive programming engine (L-02)</li>
+          <li>Community / groups data model</li>
+          <li>Analytics warehouse (PostHog → BigQuery export)</li>
+          <li>Stripe Connect payouts</li>
+          <li>BetterStack status page</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 6 — RISKS ============ -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-title">Where this stack bites back</div>
+    </div>
+    <p class="sec-intro">Every choice has a trade. These are the ones worth being eyes-open about.</p>
+
+    <div class="risks">
+      <div class="risk">
+        <div class="k">Risk · lock-in</div>
+        <h5>Supabase vendor risk</h5>
+        <p>If Supabase's pricing or reliability shifts, we own a lot of RLS + auth logic tied to it. Mitigation: the data itself is plain Postgres; we can exit to a managed Postgres (Neon / RDS) and swap auth for Clerk in a week.</p>
+      </div>
+      <div class="risk">
+        <div class="k">Risk · data</div>
+        <h5>Health data is sensitive</h5>
+        <p>Blood work, body composition, wearable data need encryption at rest (Supabase covers this) and strict RLS. Add a per-client share-audit log from day one — cheap to add now, painful to retrofit.</p>
+      </div>
+      <div class="risk">
+        <div class="k">Risk · AI</div>
+        <h5>AI quality without structured input</h5>
+        <p>B-01 only works if M-02 onboarding is schema'd, not free text. Resist the temptation to ship a "free-text intake" shortcut in MVP — it creates a six-month hole in AI quality.</p>
+      </div>
+      <div class="risk">
+        <div class="k">Risk · integrations</div>
+        <h5>Nylas + Terra cost curves</h5>
+        <p>Per-user monthly fees scale linearly with member count. Budget for the step at ~500 and ~2000 active connected users; consider direct OAuth integrations for one or two biggest providers past that.</p>
+      </div>
+      <div class="risk">
+        <div class="k">Risk · iOS native</div>
+        <h5>Web Bluetooth on iOS Safari</h5>
+        <p>iOS Safari doesn't support Web Bluetooth. In MVP / Beta, BCA via Bluetooth only works on Android-web or the installed PWA; iOS users fall back to photo upload until the Capacitor wrapper ships in L-01.</p>
+      </div>
+      <div class="risk">
+        <div class="k">Risk · velocity</div>
+        <h5>Feature-flag discipline</h5>
+        <p>PostHog flags make it easy to ship half-built features behind a toggle — easy enough that flag rot becomes its own tax. Retire flags weekly; don't let "temporary" flags become permanent config.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cost -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-num">07</div>
+      <div class="sec-title">Order-of-magnitude cost</div>
+    </div>
+    <p class="sec-intro">Indicative monthly run-rate by phase, at small team + pilot scale. All figures are public-tier rack rate; negotiate at seat count.</p>
+    <div class="cost">
+      <div><div class="k">MVP · 10–15 PT clients</div><div class="v">~£150 / mo</div><div class="sub">Supabase Pro · Vercel · Resend · Sentry free</div></div>
+      <div><div class="k">Beta · ~200 members</div><div class="v">~£600 / mo</div><div class="sub">+ Nylas · Terra · Claude + OpenAI · PostHog</div></div>
+      <div><div class="k">Launch · 1000+</div><div class="v">~£1.8k / mo</div><div class="sub">+ Stripe fees · BetterStack · warehouse</div></div>
+      <div><div class="k">AI usage (Beta)</div><div class="v">~£0.20 / client / mo</div><div class="sub">Profile summaries + voice transcribe</div></div>
+    </div>
+  </section>
+
+  <div class="version">
+    <div>Doc · v1_240426 · My Third Space · PT CMS Tech Stack</div>
+    <div><a href="roadmap.html" style="color:var(--walnut-700); text-decoration:none; border-bottom:1px solid var(--hairline-strong);">← back to roadmap</a></div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Coach Universe · My Third Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: var(--sand-50); color: var(--ink); font-family: var(--f-body); }
+  ::selection { background: var(--walnut-700); color: var(--paper); }
+
+  .mono { font-family: var(--f-mono); letter-spacing: 1.8px; text-transform: uppercase; font-size: 11px; }
+  .serif { font-family: var(--f-display); font-weight: 400; letter-spacing: -0.01em; }
+
+  /* Subtle grid paper bg on workspace */
+  .paper-grid {
+    background-image:
+      linear-gradient(var(--hairline) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -1px -1px;
+  }
+
+  /* Calendar scrollable inner region */
+  .cal-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--sand-300) transparent; }
+  .cal-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+  .cal-scroll::-webkit-scrollbar-thumb { background: var(--sand-300); border-radius: 4px; }
+  .cal-scroll::-webkit-scrollbar-track { background: transparent; }
+
+  /* Form inputs */
+  .m3s-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--hairline-strong);
+    border-radius: var(--r-md);
+    font-family: var(--f-body);
+    font-size: 15px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .m3s-input:focus { border-color: var(--walnut-700); box-shadow: 0 0 0 3px rgba(94,66,40,0.12); }
+  .m3s-input::placeholder { color: var(--clay-600); opacity: 0.7; }
+
+  .btn-primary {
+    background: var(--walnut-700); color: var(--paper);
+    border: none; padding: 14px 22px; border-radius: var(--r-pill);
+    font-family: var(--f-body); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: background .2s, transform .1s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--espresso-800); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost {
+    background: transparent; color: var(--walnut-700);
+    border: 1px solid var(--hairline-strong); padding: 10px 16px; border-radius: var(--r-pill);
+    font-size: 13px; cursor: pointer; transition: background .2s;
+    font-family: var(--f-body);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost:hover { background: var(--sand-100); }
+
+  .btn-icon {
+    width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+    background: var(--paper); border: 1px solid var(--hairline-strong); border-radius: 50%;
+    cursor: pointer; color: var(--walnut-700); transition: background .2s;
+  }
+  .btn-icon:hover { background: var(--sand-100); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-radius: var(--r-pill);
+    background: var(--sand-100); font-size: 11px; color: var(--walnut-700);
+    font-family: var(--f-mono); letter-spacing: 1.2px; text-transform: uppercase;
+    border: 1px solid var(--hairline);
+  }
+  .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Event block base */
+  .evt {
+    position: absolute; left: 4px; right: 4px;
+    padding: 6px 8px; border-radius: 8px;
+    font-size: 12px; line-height: 1.25;
+    cursor: pointer; overflow: hidden;
+    border: 1px solid transparent;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .evt:hover { transform: translateY(-1px); box-shadow: var(--sh-2); z-index: 5; }
+  .evt.pt     { background: #EFE2D3; border-color: #D9C3A3; color: #4A3420; }
+  .evt.group  { background: #DEE5D3; border-color: #B8C4A5; color: #3E4A32; }
+  .evt.block  { background: #ECCDBF; border-color: #D9A890; color: #5A3020; }
+  .evt.open   { background: #FFFDF8; border: 1px dashed var(--hairline-strong); color: var(--clay-600); }
+  .evt.pending{ background: #FFF2D8; border-color: #E8C77A; color: #6A4A10; }
+
+  .hour-line { border-top: 1px solid var(--hairline); }
+  .hour-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 1px; color: var(--clay-600); text-transform: uppercase; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--espresso-900); color: var(--sand-100);
+    padding: 14px 22px; border-radius: var(--r-pill);
+    font-size: 14px; box-shadow: var(--sh-3); z-index: 100;
+    display: inline-flex; align-items: center; gap: 10px;
+    animation: toastIn .3s ease-out;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px);} to { opacity: 1; transform: translate(-50%, 0);} }
+
+  /* Modal */
+  .m3s-modal-backdrop {
+    position: fixed; inset: 0; background: rgba(36,24,16,0.5);
+    backdrop-filter: blur(4px); z-index: 50;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; animation: fadeIn .2s;
+  }
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  .m3s-modal {
+    background: var(--paper); border-radius: var(--r-xl);
+    max-width: 480px; width: 100%; padding: 32px;
+    box-shadow: var(--sh-3); animation: modalIn .25s ease-out;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(8px);} to { opacity: 1; transform: scale(1) translateY(0);} }
+
+  /* Hide on mobile: responsive message */
+  .mobile-notice { display: none; }
+  @media (max-width: 900px) {
+    .desktop-only { display: none !important; }
+    .mobile-notice { display: flex !important; }
+  }
+
+  /* Hide scrollbars on tab pills */
+  .tab-row::-webkit-scrollbar { display: none; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="data.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#FBF7F0">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#FBF7F0"/>
+    <!-- Sidebar -->
+    <rect x="0" y="0" width="260" height="800" fill="#FFFDF8"/>
+    <rect x="0" y="0" width="260" height="800" fill="none" stroke="rgba(62,44,28,0.12)" stroke-width="1"/>
+    <!-- Sidebar wordmark -->
+    <text x="32" y="62" font-family="Georgia, serif" font-size="28" fill="#5E4228" font-style="italic">M3S</text>
+    <!-- Sidebar nav dots -->
+    <circle cx="44" cy="140" r="5" fill="#5E4228"/>
+    <circle cx="44" cy="180" r="5" fill="#8A6640" opacity="0.4"/>
+    <circle cx="44" cy="220" r="5" fill="#8A6640" opacity="0.4"/>
+    <circle cx="44" cy="260" r="5" fill="#8A6640" opacity="0.4"/>
+    <!-- Header strip -->
+    <text x="300" y="80" font-family="Georgia, serif" font-size="48" fill="#241810" font-style="italic">Today</text>
+    <text x="300" y="116" font-family="monospace" font-size="14" fill="#8A6640" letter-spacing="2">— COACH UNIVERSE</text>
+    <!-- Calendar grid -->
+    <rect x="300" y="170" width="860" height="580" rx="16" fill="#FFFDF8" stroke="rgba(62,44,28,0.12)"/>
+    <!-- Hour lines -->
+    <line x1="300" y1="240" x2="1160" y2="240" stroke="rgba(62,44,28,0.12)"/>
+    <line x1="300" y1="310" x2="1160" y2="310" stroke="rgba(62,44,28,0.12)"/>
+    <line x1="300" y1="380" x2="1160" y2="380" stroke="rgba(62,44,28,0.12)"/>
+    <line x1="300" y1="450" x2="1160" y2="450" stroke="rgba(62,44,28,0.12)"/>
+    <line x1="300" y1="520" x2="1160" y2="520" stroke="rgba(62,44,28,0.12)"/>
+    <line x1="300" y1="590" x2="1160" y2="590" stroke="rgba(62,44,28,0.12)"/>
+    <line x1="300" y1="660" x2="1160" y2="660" stroke="rgba(62,44,28,0.12)"/>
+    <!-- Events -->
+    <rect x="340" y="252" width="180" height="50" rx="8" fill="#EFE2D3" stroke="#D9C3A3"/>
+    <rect x="540" y="322" width="180" height="120" rx="8" fill="#DEE5D3" stroke="#B8C4A5"/>
+    <rect x="740" y="462" width="180" height="50" rx="8" fill="#FFF2D8" stroke="#E8C77A"/>
+    <rect x="940" y="252" width="180" height="100" rx="8" fill="#ECCDBF" stroke="#D9A890"/>
+    <rect x="340" y="532" width="180" height="50" rx="8" fill="#EFE2D3" stroke="#D9C3A3"/>
+  </svg>
+</template>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react" src="client-profile.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="admin.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="fitness-score.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="coach-universe.jsx"></script>
+</body>
+</html>

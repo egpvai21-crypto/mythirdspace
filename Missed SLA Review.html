@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Missed SLA Review · My Third Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100%;
+    background: var(--sand-50);
+    font-family: var(--f-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage {
+    min-height: 100vh;
+    padding: 56px 40px 96px;
+    background-color: var(--sand-50);
+    background-image:
+      linear-gradient(var(--hairline) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -1px -1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+  }
+
+  .section-head {
+    width: 100%;
+    max-width: 1240px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-head .label {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--clay-600);
+    white-space: nowrap;
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--hairline-strong); }
+
+  .preamble {
+    width: 100%;
+    max-width: 1240px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 56px;
+    align-items: end;
+  }
+  .preamble h1 {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 56px;
+    line-height: 1.04;
+    letter-spacing: -1px;
+    color: var(--espresso-900);
+  }
+  .preamble p {
+    font-family: var(--f-body);
+    font-size: 15px;
+    color: var(--espresso-800);
+    line-height: 1.6;
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+  .preamble p + p { margin-top: 12px; color: var(--clay-600); }
+
+  .part {
+    width: 100%;
+    max-width: 1240px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .part-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .part-head .num {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 0.9;
+    color: var(--clay-500);
+    letter-spacing: -3px;
+  }
+  .part-head .meta { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .part-head .mono {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--clay-600);
+  }
+  .part-head h2 {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+    color: var(--espresso-900);
+  }
+  .part-head .desc {
+    font-family: var(--f-body);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--clay-600);
+    max-width: 38ch;
+    text-align: right;
+    text-wrap: pretty;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .anim-up { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+
+  @media (max-width: 1180px) {
+    .preamble { grid-template-columns: 1fr !important; gap: 20px !important; align-items: start; }
+    .preamble h1 { font-size: 44px !important; }
+    .part-head { flex-direction: column !important; align-items: flex-start !important; }
+    .part-head .desc { text-align: left !important; }
+  }
+  @media (max-width: 720px) {
+    .stage { padding: 32px 16px 56px; }
+    .preamble h1 { font-size: 36px !important; }
+    .part-head h2 { font-size: 28px !important; }
+    .part-head .num { font-size: 56px !important; }
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+
+const C = {
+  espresso900: '#241810', espresso800: '#3E2C1C',
+  walnut:      '#5E4228', clay600: '#8A6640', clay500: '#A8825A',
+  sand50:      '#FBF7F0', sand100: '#F5EDE0', sand200: '#EADBC4', sand300: '#D9C3A3',
+  paper:       '#FFFDF8',
+  sage:        '#7B8B6F', sage200: '#D7DECF',
+  terra:       '#B86B4B', terra200: '#ECCDBF',
+  ochre:       '#C99A3F',
+  hair:        'rgba(62,44,28,0.12)',
+  hairStr:     'rgba(62,44,28,0.22)',
+};
+
+// Tinted ochre wash for SLA-missed surfaces
+const OCHRE_WASH = 'rgba(201,154,63,0.10)';
+const OCHRE_BORDER = 'rgba(201,154,63,0.45)';
+
+function MonoLabel({ children, color = C.clay600, size = 10, dot, dotColor }) {
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: dot ? 7 : 0,
+      fontFamily: '"JetBrains Mono",monospace', fontSize: size,
+      letterSpacing: '1.8px', textTransform: 'uppercase', color,
+    }}>
+      {dot && <span style={{ width: 6, height: 6, borderRadius: '50%', background: dotColor || color, flexShrink: 0 }} />}
+      {children}
+    </span>
+  );
+}
+
+function Avatar({ initials, bg, size = 32 }) {
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      background: bg, color: C.paper, flexShrink: 0,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '"Instrument Serif",serif', fontStyle: 'italic',
+      fontSize: size * 0.42,
+    }}>{initials}</div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// PART A — Admin Dashboard, "Requires Review" surface
+// ───────────────────────────────────────────────────────────────────────────
+
+function BrowserChrome({ children }) {
+  return (
+    <div style={{
+      width: '100%', maxWidth: 1240,
+      borderRadius: 14, overflow: 'hidden',
+      background: C.paper,
+      border: `1px solid ${C.hairStr}`,
+      boxShadow: '0 30px 80px -30px rgba(14,8,4,0.45), 0 12px 30px -16px rgba(14,8,4,0.30)',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '11px 16px',
+        background: '#EDE3D2',
+        borderBottom: `1px solid ${C.hairStr}`,
+      }}>
+        <div style={{ display: 'flex', gap: 7 }}>
+          {['#E27266', '#E5B14C', '#7BB369'].map((bg, i) => (
+            <span key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: bg, opacity: 0.95 }} />
+          ))}
+        </div>
+        <div style={{
+          flex: 1, maxWidth: 420, margin: '0 auto',
+          padding: '5px 14px', background: C.paper,
+          border: `1px solid ${C.hair}`, borderRadius: 999,
+          fontFamily: '"JetBrains Mono",monospace', fontSize: 10.5,
+          letterSpacing: '0.8px', color: C.clay600,
+          display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center',
+        }}>
+          admin.mythirdspace.in/requires-review
+        </div>
+        <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 10, letterSpacing: '1.5px', color: C.clay500 }}>
+          ⌘ K
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Sidebar() {
+  const nav = [
+    { glyph: '▦', label: 'Overview',         badge: null,  active: false },
+    { glyph: '▭', label: 'Calendar',         badge: null,  active: false },
+    { glyph: '✧', label: 'Invites',          badge: 3,     active: false, badgeColor: C.terra },
+    { glyph: '◐', label: 'Requires Review',  badge: 4,     active: true,  badgeColor: C.ochre },
+    { glyph: '◈', label: 'Coaches',          badge: null,  active: false },
+    { glyph: '⚲', label: 'Users',            badge: null,  active: false },
+  ];
+
+  return (
+    <aside style={{
+      width: 240, flexShrink: 0,
+      background: C.espresso900,
+      padding: '24px 16px 24px',
+      display: 'flex', flexDirection: 'column', gap: 4,
+      minHeight: '100%',
+      borderRight: `1px solid rgba(255,253,248,0.06)`,
+    }}>
+      {/* Logo */}
+      <div style={{
+        padding: '6px 8px 18px',
+        marginBottom: 14,
+        borderBottom: `1px solid rgba(255,253,248,0.08)`,
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
+        <span style={{
+          fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic',
+          fontSize: 24, color: C.paper, lineHeight: 1,
+        }}>m3s</span>
+        <span style={{
+          fontFamily: '"JetBrains Mono",monospace', fontSize: 8.5,
+          letterSpacing: '2px', color: C.ochre,
+          textTransform: 'uppercase',
+        }}>Admin</span>
+      </div>
+
+      <MonoLabel color="rgba(255,253,248,0.32)" size={9}>Operations</MonoLabel>
+      <div style={{ height: 6 }} />
+
+      {nav.map(n => (
+        <NavItem key={n.label} {...n} />
+      ))}
+
+      <div style={{ flex: 1 }} />
+
+      <div style={{
+        padding: '14px 12px',
+        background: 'rgba(255,253,248,0.04)',
+        border: '1px solid rgba(255,253,248,0.08)',
+        borderRadius: 10,
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
+        <Avatar initials="SS" bg={C.walnut} size={28} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontFamily: '"Inter",system-ui', fontSize: 12, fontWeight: 500,
+            color: C.paper,
+          }}>Shwetambari</div>
+          <div style={{
+            fontFamily: '"JetBrains Mono",monospace', fontSize: 8.5,
+            letterSpacing: '1.4px', textTransform: 'uppercase',
+            color: 'rgba(255,253,248,0.45)', marginTop: 1,
+          }}>Owner</div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function NavItem({ glyph, label, badge, active, badgeColor }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      padding: '10px 12px',
+      borderRadius: 8,
+      background: active ? 'rgba(201,154,63,0.10)' : 'transparent',
+      cursor: 'pointer',
+      position: 'relative',
+    }}>
+      {active && (
+        <span style={{
+          position: 'absolute', left: 0, top: 8, bottom: 8,
+          width: 2, borderRadius: 2, background: C.ochre,
+        }} />
+      )}
+      <span style={{
+        width: 18, textAlign: 'center', fontSize: 13,
+        color: active ? C.ochre : 'rgba(255,253,248,0.55)',
+      }}>{glyph}</span>
+      <span style={{
+        flex: 1,
+        fontFamily: '"Inter",system-ui', fontSize: 13.5,
+        color: active ? C.paper : 'rgba(255,253,248,0.78)',
+        fontWeight: active ? 500 : 400,
+      }}>{label}</span>
+      {badge != null && (
+        <span style={{
+          minWidth: 20, padding: '2px 7px',
+          borderRadius: 999, background: badgeColor || C.terra,
+          color: C.paper,
+          fontFamily: '"JetBrains Mono",monospace', fontSize: 9.5,
+          letterSpacing: '0.5px', fontWeight: 600,
+          textAlign: 'center',
+          boxShadow: active ? `0 0 0 2px rgba(201,154,63,0.25)` : 'none',
+        }}>{badge}</span>
+      )}
+    </div>
+  );
+}
+
+// SLA-missed card
+function MissedSLACard({ data, dimmed }) {
+  const [hov, setHov] = React.useState(false);
+  return (
+    <div className="anim-up" style={{
+      background: dimmed ? C.sand100 : C.sand200,
+      borderRadius: 12,
+      border: `1px solid ${C.hair}`,
+      borderLeft: `4px solid ${C.ochre}`,
+      padding: '20px 22px 22px',
+      opacity: dimmed ? 0.55 : 1,
+      transition: 'opacity .2s',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 12, flexWrap: 'wrap', marginBottom: 14,
+      }}>
+        {/* SLA MISSED pill */}
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 7,
+          padding: '5px 11px', borderRadius: 999,
+          background: OCHRE_WASH,
+          border: `1px solid ${OCHRE_BORDER}`,
+          fontFamily: '"JetBrains Mono",monospace', fontSize: 9.5,
+          letterSpacing: '1.8px', textTransform: 'uppercase', color: C.ochre,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.ochre }} />
+          SLA missed
+        </span>
+        <MonoLabel color={C.clay600} size={9.5}>
+          {data.resolvedAt}
+        </MonoLabel>
+      </div>
+
+      {/* Session line: parties + slot */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Avatar initials={data.client.initials} bg={C.walnut} size={28} />
+          <span style={{
+            fontFamily: '"Inter",system-ui', fontSize: 14, fontWeight: 600, color: C.espresso900,
+          }}>{data.client.name}</span>
+        </div>
+        <span style={{ fontFamily: '"JetBrains Mono",monospace', fontSize: 11, color: C.clay500 }}>↛</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Avatar initials={data.coach.initials} bg={data.coach.bg} size={28} />
+          <span style={{
+            fontFamily: '"Inter",system-ui', fontSize: 14, fontWeight: 500, color: C.espresso900,
+          }}>{data.coach.name}</span>
+        </div>
+        <span style={{ width: 1, height: 16, background: C.hairStr, marginInline: 4 }} />
+        <span style={{
+          fontFamily: '"JetBrains Mono",monospace', fontSize: 11.5,
+          letterSpacing: '0.8px', color: C.espresso800, fontWeight: 500,
+        }}>
+          {data.slot}
+        </span>
+      </div>
+
+      {/* Italic note */}
+      <p style={{
+        fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic',
+        fontSize: 17, lineHeight: 1.35, color: C.espresso800,
+        marginBottom: 18, textWrap: 'pretty',
+        letterSpacing: '-0.2px',
+      }}>
+        “Client was auto-notified at 8:00 PM to select a new slot.”
+      </p>
+
+      {/* Outcome line */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16,
+        paddingTop: 12, borderTop: `1px dashed ${C.hair}`,
+        flexWrap: 'wrap',
+      }}>
+        <MonoLabel color={C.clay600} size={9.5} dot dotColor={C.sage}>
+          Outcome
+        </MonoLabel>
+        <span style={{
+          fontFamily: '"Inter",system-ui', fontSize: 12.5, color: C.espresso800,
+        }}>
+          {data.outcome}
+        </span>
+      </div>
+
+      {/* Ghost CTA */}
+      <button
+        onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+        style={{
+          padding: '9px 18px', borderRadius: 999,
+          border: `1.25px solid ${hov ? C.walnut : C.hairStr}`,
+          background: hov ? C.paper : 'transparent',
+          color: C.espresso900,
+          fontFamily: '"Inter",system-ui', fontSize: 12.5, fontWeight: 500,
+          cursor: 'pointer', transition: 'all .18s',
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+        }}>
+        View session history
+        <span style={{ transform: hov ? 'translateX(2px)' : 'none', transition: 'transform .2s' }}>→</span>
+      </button>
+    </div>
+  );
+}
+
+const REVIEW_ITEMS = [
+  {
+    client: { name: 'Riya Sharma', initials: 'RS' },
+    coach:  { name: 'Joe Mehta',   initials: 'JO', bg: C.walnut },
+    slot:   'TUE · 29 APR · 07:00 AM',
+    resolvedAt: 'Auto-resolved · 8:00 PM yesterday',
+    outcome: 'User notified to rebook. No response yet.',
+  },
+  {
+    client: { name: 'Karthik N.',  initials: 'KN' },
+    coach:  { name: 'Lee Vyas',    initials: 'LE', bg: C.sage },
+    slot:   'WED · 30 APR · 06:30 AM',
+    resolvedAt: 'Auto-resolved · 8:00 PM, 2 days ago',
+    outcome: 'Credit returned · user rebooked Thu 8 AM.',
+  },
+  {
+    client: { name: 'Priya R.',    initials: 'PR' },
+    coach:  { name: 'Anisha Rao',  initials: 'AN', bg: C.terra },
+    slot:   'THU · 24 APR · 05:30 PM',
+    resolvedAt: 'Auto-resolved · 5 days ago',
+    outcome: 'Reassigned to Deb · session completed.',
+  },
+];
+
+function AdminDashboardFragment() {
+  return (
+    <BrowserChrome>
+      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', background: C.sand50, minHeight: 720 }}>
+        <Sidebar />
+
+        {/* Main pane */}
+        <div style={{ padding: '32px 36px 44px' }}>
+          {/* Breadcrumb / meta */}
+          <div className="anim-up" style={{
+            display: 'flex', alignItems: 'center', gap: 12, marginBottom: 22,
+            fontFamily: '"JetBrains Mono",monospace', fontSize: 10,
+            letterSpacing: '1.6px', textTransform: 'uppercase', color: C.clay600,
+          }}>
+            <span>Admin</span>
+            <span style={{ width: 3, height: 3, borderRadius: '50%', background: C.clay500 }} />
+            <span style={{ color: C.espresso900, fontWeight: 600 }}>Requires Review</span>
+            <span style={{ width: 3, height: 3, borderRadius: '50%', background: C.clay500 }} />
+            <span style={{ color: C.clay500 }}>4 items</span>
+          </div>
+
+          {/* Page heading */}
+          <div className="anim-up" style={{ marginBottom: 26 }}>
+            <MonoLabel color={C.clay600} dot dotColor={C.ochre}>Post-SLA log · auto-resolved</MonoLabel>
+            <h2 style={{
+              fontFamily: '"Instrument Serif",Georgia,serif', fontStyle: 'italic',
+              fontWeight: 400, fontSize: 40, lineHeight: 1.05,
+              letterSpacing: '-0.5px', color: C.espresso900, marginTop: 8,
+            }}>
+              Sessions that slipped past their <em>SLA.</em>
+            </h2>
+            <p style={{
+              fontFamily: '"Inter",system-ui', fontSize: 14, color: C.espresso800,
+              lineHeight: 1.55, maxWidth: '64ch', marginTop: 10,
+            }}>
+              These are separate from the active schedule. The system already resolved them — clients have been notified, credits returned where needed. Open one when you've got a quiet moment.
+            </p>
+          </div>
+
+          {/* Tab strip — Active / Resolved */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 4,
+            borderBottom: `1px solid ${C.hair}`,
+            marginBottom: 20,
+          }}>
+            {[
+              { lbl: 'Past 24 hours', count: 1, active: true },
+              { lbl: 'This week',     count: 3, active: false },
+              { lbl: 'Older',         count: 7, active: false },
+            ].map(t => (
+              <div key={t.lbl} style={{
+                padding: '10px 14px', position: 'relative',
+                fontFamily: '"JetBrains Mono",monospace', fontSize: 10,
+                letterSpacing: '1.5px', textTransform: 'uppercase',
+                color: t.active ? C.espresso900 : C.clay600,
+                fontWeight: t.active ? 600 : 400,
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                cursor: 'pointer',
+              }}>
+                {t.lbl}
+                <span style={{
+                  fontSize: 8.5,
+                  padding: '1.5px 5.5px', borderRadius: 999,
+                  background: t.active ? C.ochre : C.sand200,
+                  color: t.active ? C.paper : C.clay600,
+                  letterSpacing: '0.5px',
+                }}>{t.count}</span>
+                {t.active && <span style={{
+                  position: 'absolute', left: 6, right: 6, bottom: -1,
+                  height: 2, background: C.ochre,
+                }} />}
+              </div>
+            ))}
+            <div style={{ flex: 1 }} />
+            <span style={{
+              fontFamily: '"JetBrains Mono",monospace', fontSize: 10,
+              letterSpacing: '1.5px', color: C.clay500,
+              padding: '8px 12px',
+            }}>Sorted: most recent</span>
+          </div>
+
+          {/* Cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <MissedSLACard data={REVIEW_ITEMS[0]} />
+          </div>
+
+          {/* "This week" preview — slightly dimmed to show this view is paginated */}
+          <div style={{ marginTop: 28, marginBottom: 12 }}>
+            <MonoLabel color={C.clay500} size={9.5}>This week · 3 more</MonoLabel>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <MissedSLACard data={REVIEW_ITEMS[1]} dimmed />
+            <MissedSLACard data={REVIEW_ITEMS[2]} dimmed />
+          </div>
+        </div>
+      </div>
+    </BrowserChrome>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// PART B — WhatsApp template spec
+// ───────────────────────────────────────────────────────────────────────────
+
+function MessageBubble({ children }) {
+  return (
+    <div style={{
+      maxWidth: 360,
+      background: '#F2EEE5', // warm grey — sand-leaning to stay in palette
+      borderRadius: '4px 14px 14px 14px',
+      padding: '14px 16px 12px',
+      boxShadow: '0 1px 1px rgba(62,44,28,0.06)',
+      fontFamily: '"Inter",system-ui',
+      color: C.espresso900,
+      fontSize: 13.5,
+      lineHeight: 1.5,
+      position: 'relative',
+      whiteSpace: 'pre-wrap',
+    }}>
+      {children}
+      <div style={{
+        marginTop: 8, display: 'flex', justifyContent: 'flex-end',
+        fontFamily: '"Inter",system-ui', fontSize: 10.5, color: C.clay600,
+      }}>
+        9:14 AM
+      </div>
+    </div>
+  );
+}
+
+function BubbleHeader() {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 6,
+      fontWeight: 600, fontSize: 13.5, color: C.espresso900,
+      marginBottom: 6,
+    }}>
+      My Third Space <span aria-hidden="true">🌿</span>
+    </div>
+  );
+}
+
+function MetaLine({ k, v, accent }) {
+  return (
+    <div style={{
+      display: 'flex', gap: 8, alignItems: 'baseline',
+      padding: '4px 0',
+      fontSize: 13,
+    }}>
+      <span style={{ color: C.clay600, fontWeight: 500, minWidth: 64 }}>{k}</span>
+      <span style={{ color: accent || C.espresso900 }}>{v}</span>
+    </div>
+  );
+}
+
+function CTAChip({ children }) {
+  return (
+    <div style={{
+      marginTop: 10, paddingTop: 10,
+      borderTop: '1px solid rgba(62,44,28,0.10)',
+      display: 'flex', alignItems: 'center', gap: 8,
+      fontSize: 13, fontWeight: 600, color: '#1F6FB8',
+    }}>
+      <span style={{ fontSize: 14 }}>👉</span>
+      <span style={{ textDecoration: 'underline', textDecorationThickness: '1px', textUnderlineOffset: 3 }}>
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function VariantSpec({ tag, title, summary, children }) {
+  return (
+    <div className="anim-up" style={{
+      display: 'flex', flexDirection: 'column', gap: 14,
+      padding: '28px 24px 28px',
+      background: C.paper,
+      border: `1px solid ${C.hair}`,
+      borderRadius: 14,
+      boxShadow: '0 6px 20px -8px rgba(62,44,28,0.10)',
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 22, height: 22, borderRadius: '50%',
+            background: C.espresso900, color: C.paper,
+            fontFamily: '"JetBrains Mono",monospace', fontSize: 10, fontWeight: 600,
+          }}>{tag}</span>
+          <MonoLabel color={C.clay600}>
+            Variant {tag} · {title}
+          </MonoLabel>
+        </div>
+        <p style={{
+          fontFamily: '"Inter",system-ui', fontSize: 13, color: C.clay600,
+          lineHeight: 1.55, fontStyle: 'italic',
+        }}>{summary}</p>
+      </div>
+
+      {/* Pseudo-chat surface */}
+      <div style={{
+        marginTop: 6,
+        padding: '20px 16px 12px',
+        background: '#FAF6EC',
+        border: `1px solid ${C.hair}`,
+        borderRadius: 12,
+        position: 'relative',
+        backgroundImage: 'radial-gradient(rgba(62,44,28,0.04) 1px, transparent 1px)',
+        backgroundSize: '14px 14px',
+      }}>
+        {/* Sender label */}
+        <div style={{
+          fontFamily: '"Inter",system-ui', fontSize: 11,
+          color: C.clay600, marginBottom: 6, paddingLeft: 4,
+          letterSpacing: '0.2px',
+        }}>
+          <span style={{ color: C.sage, fontWeight: 600 }}>~My Third Space</span> · WhatsApp Business
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function VariantA() {
+  return (
+    <VariantSpec
+      tag="A"
+      title="Reassignment proposed"
+      summary="Sent when a substitute coach IS available at the original time. Confirms by 8 PM keeps the slot."
+    >
+      <MessageBubble>
+        <BubbleHeader />
+        <div style={{ marginBottom: 8 }}>
+          Hi <span style={{ color: C.terra, fontWeight: 500 }}>[Name]</span>, your upcoming session has been updated.
+        </div>
+
+        <div style={{
+          padding: '8px 12px',
+          background: 'rgba(62,44,28,0.04)',
+          borderLeft: '2px solid rgba(62,44,28,0.18)',
+          borderRadius: '0 6px 6px 0',
+          margin: '8px 0',
+        }}>
+          <MetaLine k="Original" v="Coach Lee · Tue, 29 Apr · 7:00 AM" />
+        </div>
+
+        <div style={{ marginBottom: 6 }}>
+          Coach Lee is unavailable for this session.
+        </div>
+        <div style={{
+          marginBottom: 8,
+          display: 'flex', alignItems: 'flex-start', gap: 8,
+          padding: '6px 10px',
+          background: 'rgba(123,139,111,0.10)',
+          borderRadius: 6,
+        }}>
+          <span>✅</span>
+          <span><strong style={{ fontWeight: 600 }}>Coach Meera</strong> is available at the same time.</span>
+        </div>
+        <div style={{ marginBottom: 4 }}>
+          Confirm by <strong style={{ fontWeight: 600 }}>8:00 PM tonight</strong> to keep this slot — or visit your profile to decline and receive a session credit.
+        </div>
+
+        <CTAChip>View &amp; Confirm</CTAChip>
+      </MessageBubble>
+    </VariantSpec>
+  );
+}
+
+function VariantB() {
+  return (
+    <VariantSpec
+      tag="B"
+      title="No coach available · credited"
+      summary="Sent when no substitute is free. Session is voided and one credit returned automatically."
+    >
+      <MessageBubble>
+        <BubbleHeader />
+        <div style={{ marginBottom: 8 }}>
+          Hi <span style={{ color: C.terra, fontWeight: 500 }}>[Name]</span>, we need to update your upcoming session.
+        </div>
+
+        <div style={{
+          padding: '8px 12px',
+          background: 'rgba(62,44,28,0.04)',
+          borderLeft: '2px solid rgba(62,44,28,0.18)',
+          borderRadius: '0 6px 6px 0',
+          margin: '8px 0',
+        }}>
+          <MetaLine k="Session" v="Tue, 29 Apr · 7:00 AM · Strength & Conditioning" />
+        </div>
+
+        <div style={{ marginBottom: 6 }}>
+          Coach Lee is unavailable and no other coaches are free.
+        </div>
+        <div style={{
+          marginBottom: 8,
+          display: 'flex', alignItems: 'flex-start', gap: 8,
+          padding: '6px 10px',
+          background: 'rgba(123,139,111,0.10)',
+          borderRadius: 6,
+        }}>
+          <span>✅</span>
+          <span><strong style={{ fontWeight: 600 }}>1 session credit</strong> has been added to your package.</span>
+        </div>
+        <div>
+          Book your next session whenever you're ready.
+        </div>
+
+        <CTAChip>Book a Session</CTAChip>
+      </MessageBubble>
+    </VariantSpec>
+  );
+}
+
+function MessageTemplates() {
+  return (
+    <div style={{
+      display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 28,
+    }}>
+      <VariantA />
+      <VariantB />
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// App
+// ───────────────────────────────────────────────────────────────────────────
+function App() {
+  return (
+    <div className="stage" data-screen-label="Missed SLA review + WhatsApp templates">
+      <div className="section-head">
+        <div className="label">Admin · requires review + comms spec · fig. 06</div>
+        <div className="rule" />
+        <div className="label" style={{ color: 'var(--clay-500)' }}>Part A · Part B</div>
+      </div>
+
+      <div className="preamble">
+        <h1>After the deadline,<br/>the <em>system handles it.</em></h1>
+        <div>
+          <p>What an admin sees the morning after the 8 PM SLA quietly auto-resolves a decline. And the two outgoing message templates the client receives on WhatsApp at that exact moment.</p>
+          <p>Both surfaces live downstream of the resolution screen — one is read-only review, the other is automated comms. Neither asks the admin to act.</p>
+        </div>
+      </div>
+
+      {/* PART A */}
+      <div className="part" data-screen-label="Part A · admin requires review">
+        <div className="part-head">
+          <div className="num">A</div>
+          <div className="meta">
+            <span className="mono">Part A · admin dashboard</span>
+            <h2>Requires review.</h2>
+          </div>
+          <div className="desc">
+            A separate surface from the active schedule. The system already resolved these — sidebar badge tells the admin a number, not an urgency.
+          </div>
+        </div>
+        <AdminDashboardFragment />
+      </div>
+
+      {/* PART B */}
+      <div className="part" data-screen-label="Part B · whatsApp templates">
+        <div className="part-head">
+          <div className="num">B</div>
+          <div className="meta">
+            <span className="mono">Part B · WhatsApp template spec</span>
+            <h2>What lands in their thread.</h2>
+          </div>
+          <div className="desc">
+            Minimal structure. Inter throughout, merge fields highlighted, sage tick for the resolution line. Sent from WhatsApp Business at 8:01 PM.
+          </div>
+        </div>
+        <MessageTemplates />
+
+        {/* Annotation footer */}
+        <div style={{
+          marginTop: 8,
+          padding: '18px 20px',
+          background: C.sand100,
+          border: `1px dashed ${C.hairStr}`,
+          borderRadius: 10,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: 24,
+        }}>
+          {[
+            { k: 'Merge fields', v: '[Name] · pulled from member profile. Always title-cased, first name only.' },
+            { k: 'Send window',  v: 'Both variants fire at 8:01 PM if no admin action by 8:00 PM SLA.' },
+            { k: 'CTA target',   v: 'Variant A → /confirm/{session_id} · Variant B → /book' },
+          ].map(({ k, v }) => (
+            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span style={{
+                fontFamily: '"JetBrains Mono",monospace', fontSize: 9.5,
+                letterSpacing: '1.8px', textTransform: 'uppercase', color: C.clay600,
+              }}>{k}</span>
+              <span style={{
+                fontFamily: '"Inter",system-ui', fontSize: 12.5, color: C.espresso800,
+                lineHeight: 1.55,
+              }}>{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
